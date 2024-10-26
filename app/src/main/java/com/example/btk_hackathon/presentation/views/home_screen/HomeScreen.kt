@@ -16,7 +16,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +36,6 @@ import com.google.ai.client.generativeai.type.generationConfig
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -46,10 +44,6 @@ fun HomeScreen() {
     // State to hold book advice and loading state
     var bookAdvice by remember { mutableStateOf<Response?>(null) }
     var isLoading by remember { mutableStateOf(false) }
-
-
-
-
 
     // Box to center the content
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -76,7 +70,7 @@ fun HomeScreen() {
                     )
 
                     InformationCard(title = "Yazar", content = advice.yazar)
-                    InformationCard(title = "Yayın Yılı", content = advice.yayın_yılı.toString())
+                    InformationCard(title = "Yayın Yılı", content = advice.yayın_yılı)
                     InformationCard(title = "Özet", content = advice.ozet)
                     InformationCard(
                         title = "Ana Karakterler",
@@ -84,12 +78,10 @@ fun HomeScreen() {
                     )
                     InformationCard(title = "Ortalama Puan", content = advice.ortalama_puan.toString())
 
-                    // Button to fetch new book advice
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
-                            // Fetch new book advice when button is clicked
-                            isLoading = true // Set loading state
+                            isLoading = true
                             fetchBookAdvice { newAdvice ->
                                 bookAdvice = newAdvice
                                 isLoading = false // Reset loading state after fetching
@@ -164,10 +156,11 @@ fun InformationCard(title: String, content: String) {
 fun fetchBookAdvice(onResult: (Response?) -> Unit) {
     // Use a coroutine to fetch book advice in a background thread
     CoroutineScope(Dispatchers.IO).launch {
-        val response = getRandomBookAdvice2() // Fetch book advice
+        val response = getRandomBookAdvice() // Fetch book advice
         onResult(response) // Return the result
     }
 }
+
 suspend fun getRandomBookAdvice2(): Response {
     return withContext(Dispatchers.IO) {
         val model = GenerativeModel(
@@ -215,7 +208,6 @@ suspend fun getRandomBookAdvice2(): Response {
 
 suspend fun getRandomBookAdvice(): Response {
     return withContext(Dispatchers.IO) {
-        // Configure the generative model for getting book advice
         val generativeModel = GenerativeModel(
             modelName = "gemini-1.5-flash",
             apiKey = BuildConfig.API_KEY,
