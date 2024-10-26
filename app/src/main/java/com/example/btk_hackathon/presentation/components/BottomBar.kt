@@ -29,7 +29,7 @@ fun BottomBar(navController: NavHostController) {
             NavigationBarItem(
                 icon = {
                     Icon(
-                        painter = painterResource(id = item.iconResId), // Burada painterResource kullanıyoruz
+                        painter = painterResource(id = item.iconResId),
                         contentDescription = item.title,
                         tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(30.dp)

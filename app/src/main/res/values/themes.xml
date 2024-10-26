@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
-
     <style name="Theme.Btkhackathon" parent="android:Theme.Material.Light.NoActionBar">
         <!-- Primary colors and other attributes -->
 
@@ -11,3 +9,4 @@
     </style>
 </resources>
 
+   <!-- Aşağıdaki bilgileri sağlamalısın: Kitabın adı, Yazar, Yayın yılı, Ana karakterler (liste olarak), Kitabın kısa özeti, Eleştirmenlerden aldığı ortalama puan. Tüm bilgileri, şu JSON formatında düzenleyin: { \"response\": { \"kitap_adi\": \"[Kitap Adı]\", \"yazar\": \"[Yazar]\", \"yayın_yili\": [Yayın Yılı], \"ana_karakterler\": [\"[Ana Karakter 1]\", \"[Ana Karakter 2]\", ...], \"ozet\": \"[Kısa Özet]\", \"ortalama_puan\": [Ortalama Puan] }}."-->

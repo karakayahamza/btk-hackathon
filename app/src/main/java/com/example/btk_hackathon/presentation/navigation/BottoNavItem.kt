@@ -5,7 +5,7 @@ import com.example.btk_hackathon.R
 data class BottomNavItem(
     val route: String,
     val title: String,
-    val iconResId: Int // Burada Int kullanarak resim kaynağını tutuyoruz
+    val iconResId: Int
 )
 
 object BottomNavigationItems {
@@ -13,17 +13,17 @@ object BottomNavigationItems {
         BottomNavItem(
             route = Routes.Home.route,
             title = "Home",
-            iconResId = R.drawable.dashboard // Var olan vektör ikonun kaynak ID'si
+            iconResId = R.drawable.dashboard
         ),
         BottomNavItem(
             route = Routes.Profile.route,
             title = "Profile",
-            iconResId = R.drawable.dashboard // Kendi ikonunuzu buraya ekleyin
+            iconResId = R.drawable.dashboard
         ),
         BottomNavItem(
             route = Routes.Settings.route,
             title = "Settings",
-            iconResId = R.drawable.dashboard // Var olan vektör ikonun kaynak ID'si
+            iconResId = R.drawable.dashboard
         )
     )
 }
