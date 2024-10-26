@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Btkhackathon" parent="android:Theme.Material.Light.NoActionBar" />
+
+
+    <style name="Theme.Btkhackathon" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Primary colors and other attributes -->
+
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>
+

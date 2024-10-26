@@ -1,15 +1,11 @@
 package com.example.btk_hackathon.presentation.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.AddCircle
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.btk_hackathon.R
 
 data class BottomNavItem(
     val route: String,
     val title: String,
-    val icon: ImageVector
+    val iconResId: Int // Burada Int kullanarak resim kaynağını tutuyoruz
 )
 
 object BottomNavigationItems {
@@ -17,17 +13,17 @@ object BottomNavigationItems {
         BottomNavItem(
             route = Routes.Home.route,
             title = "Home",
-            icon = Icons.Outlined.Home
+            iconResId = R.drawable.dashboard // Var olan vektör ikonun kaynak ID'si
         ),
         BottomNavItem(
             route = Routes.Profile.route,
             title = "Profile",
-            icon = Icons.Outlined.AddCircle
+            iconResId = R.drawable.dashboard // Kendi ikonunuzu buraya ekleyin
         ),
         BottomNavItem(
             route = Routes.Settings.route,
             title = "Settings",
-            icon = Icons.Outlined.AccountCircle
+            iconResId = R.drawable.dashboard // Var olan vektör ikonun kaynak ID'si
         )
     )
 }
