@@ -264,7 +264,6 @@ suspend fun getRandomBookAdvice(): Response {
                 )
             }
         )
-
         val prompt =
             "Kullanıcının ilgi alanları şunlardır: Bilim Kurgu, Kişisel Gelişim, Tarih, Romantik, Polisiye. " +
                     "Kullanıcının en sevdiği kitaplar: 'Dune, Kayıp Zamanın İzinde', " +
@@ -286,4 +285,3 @@ suspend fun getRandomBookAdvice(): Response {
         )
     }
 }
-
