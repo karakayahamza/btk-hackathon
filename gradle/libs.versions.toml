@@ -19,6 +19,10 @@ org-jetbrains-kotlin-android = "1.8.0"
 preferenceKtx = "1.2.1"
 roomRuntime = "2.6.1"
 lottieCompose = "6.0.0"
+hiltAndroid = "2.51.1"
+hiltAndroidCompiler = "2.51.1"
+hiltWork = "1.2.0"
+hiltCompiler = "1.2.0"
 
 
 [libraries]
@@ -30,6 +34,11 @@ lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "
 #noinspection SimilarGradleDependency
 generativeai-v090 = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeaiVersion" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltWork" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

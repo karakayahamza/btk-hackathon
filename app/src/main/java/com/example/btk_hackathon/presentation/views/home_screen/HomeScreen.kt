@@ -1,5 +1,6 @@
 package com.example.btk_hackathon.presentation.views.home_screen
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -15,6 +17,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,265 +26,200 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.btk_hackathon.BuildConfig
-import com.example.btk_hackathon.data.local.model.BookAdvice
-import com.example.btk_hackathon.data.local.model.Response
-import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.FunctionType
-import com.google.ai.client.generativeai.type.Schema
-import com.google.ai.client.generativeai.type.content
-import com.google.ai.client.generativeai.type.generationConfig
-import com.google.gson.Gson
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.btk_hackathon.data.local.model.Book
+import com.example.btk_hackathon.presentation.views.BookViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun HomeScreen() {
-    // State to hold book advice and loading state
-    var bookAdvice by remember { mutableStateOf<Response?>(null) }
+    val bookViewModel: BookViewModel = hiltViewModel()
+    var bookAdvices by remember { mutableStateOf<List<Book>?>(null) }
     var isLoading by remember { mutableStateOf(false) }
 
-    // Box to center the content
+    var interests by remember { mutableStateOf("") }
+    var favoriteBooks by remember { mutableStateOf("") }
+    var favoriteAuthors by remember { mutableStateOf("") }
+    var readingStyle by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
+
+
+    bookViewModel.
+
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         if (isLoading) {
-            // Show loading indicator while fetching data
             CircularProgressIndicator()
         } else {
-            // Display book advice or a button to fetch advice
-            bookAdvice?.response?.let { advice ->
+            bookAdvices?.let { advices ->
+                if (advices.isNotEmpty()) {
+                    LazyColumn(modifier = Modifier.padding(16.dp)) {
+                        items(advices.size) { index ->
+                            val advice = advices[index]
+                            InformationCard(
+                                viewModel = bookViewModel,
+                                context = context,
+                                advice
+                            )
+                        }
+                    }
+                } else {
+                    Text(
+                        text = "Hiç kitap önerisi yok.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            } ?: run {
                 Column(
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(16.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Safely display the book title, providing a default if null
-                    Text(
-                        text = advice.kitap_adi?.uppercase() ?: "Kitap Adı Yok",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        ),
-                        modifier = Modifier.padding(bottom = 16.dp)
+                    // Kullanıcı bilgilerini almak için TextField bileşenleri
+                    TextField(
+                        value = interests,
+                        onValueChange = { interests = it },
+                        label = { Text("İlgi Alanları (örn: Bilim Kurgu, Kişisel Gelişim)") },
+                        modifier = Modifier.fillMaxWidth()
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                    InformationCard(title = "Yazar", content = advice.yazar)
-                    InformationCard(title = "Yayın Yılı", content = advice.yayın_yılı)
-                    InformationCard(title = "Özet", content = advice.ozet)
-                    InformationCard(
-                        title = "Ana Karakterler",
-                        content = advice.ana_karakterler.joinToString(", ")
+                    TextField(
+                        value = favoriteBooks,
+                        onValueChange = { favoriteBooks = it },
+                        label = { Text("En Sevdiğiniz Kitaplar (örn: Dune, Kayıp Zamanın İzinde)") },
+                        modifier = Modifier.fillMaxWidth()
                     )
-                    InformationCard(title = "Ortalama Puan", content = advice.ortalama_puan.toString())
+                    Spacer(modifier = Modifier.height(8.dp))
 
+                    TextField(
+                        value = favoriteAuthors,
+                        onValueChange = { favoriteAuthors = it },
+                        label = { Text("En Sevdiğiniz Yazarlar (örn: Isaac Asimov, Haruki Murakami)") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    TextField(
+                        value = readingStyle,
+                        onValueChange = { readingStyle = it },
+                        label = { Text("Okuma Tarzı (örn: kurgusal, orta uzunluk)") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
+
+                    // Rastgele Kitap Önerisi Al Butonu
                     Button(
                         onClick = {
                             isLoading = true
-                            fetchBookAdvice { newAdvice ->
-                                bookAdvice = newAdvice
-                                isLoading = false // Reset loading state after fetching
+                            fetchBookAdvice(
+                                viewModel = bookViewModel,
+                                interests = interests,
+                                favoriteBooks = favoriteBooks,
+                                favoriteAuthors = favoriteAuthors,
+                                readingStyle = readingStyle
+                            ) { newAdvices ->
+                                bookAdvices = newAdvices
+                                isLoading = false
                             }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                            .padding(vertical = 16.dp),
                         colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.primary)
                     ) {
-                        Text(
-                            text = "Yeni Kitap Önerisi Al",
-                            color = Color.White // Change text color to white
-                        )
+                        Text(text = "Rastgele Kitap Önerisi Al", color = Color.White)
                     }
-                }
-            } ?: run {
-                // If no book advice is available, show button to fetch advice
-                Button(
-                    onClick = {
-                        // Fetch book advice when button is clicked
-                        isLoading = true // Set loading state
-                        fetchBookAdvice { newAdvice ->
-                            bookAdvice = newAdvice
-                            isLoading = false // Reset loading state after fetching
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 16.dp),
-                    colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.primary)
-                ) {
-                    Text(
-                        text = "Rastgele Kitap Önerisi Al",
-                        color = Color.White // Change text color to white
-                    )
                 }
             }
         }
     }
 }
 
+fun saveBookToDatabase(viewModel: BookViewModel, context: Context, book: Book) {
+    Log.d("Book", book.kitap_adi)
+    viewModel.insert(book)
+}
 
 @Composable
-fun InformationCard(title: String, content: String) {
+fun InformationCard(viewModel: BookViewModel, context: Context, book: Book) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         elevation = CardDefaults.cardElevation(4.dp),
-        shape = MaterialTheme.shapes.medium // Rounded corners
+        shape = MaterialTheme.shapes.medium
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = title,
+                text = book.kitap_adi.uppercase(),
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.secondary
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = content,
+                text = "Yazar: ${book.yazar ?: "Yazar Bilgisi Yok"}",
                 style = MaterialTheme.typography.bodyMedium
             )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Yayın Yılı: ${book.yayin_yili ?: "Yayın Yılı Bilgisi Yok"}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Ortalama Puan: ${book.ortalama_puan.toString() ?: "Puan Bilgisi Yok"}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Özet: ${book.ozet ?: "Özet Bilgisi Yok"}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Ana Karakterler: ${
+                    if (book.ana_karakterler.isNotEmpty()) book.ana_karakterler.joinToString(
+                        ", "
+                    ) else "Ana karakterler bulunamadı."
+                }",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    saveBookToDatabase(viewModel = viewModel, context, book)
+                },
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                Text("Kaydet")
+            }
         }
     }
 }
 
+
 // Function to fetch book advice
-fun fetchBookAdvice(onResult: (Response?) -> Unit) {
-    // Use a coroutine to fetch book advice in a background thread
+fun fetchBookAdvice(
+    interests: String,
+    favoriteBooks: String,
+    favoriteAuthors: String,
+    readingStyle: String,
+    viewModel: BookViewModel, onResult: (List<Book>?) -> Unit
+) {
     CoroutineScope(Dispatchers.IO).launch {
-        val response = getRandomBookAdvice() // Fetch book advice
-        onResult(response) // Return the result
-    }
-}
-
-suspend fun getRandomBookAdvice2(): Response {
-    return withContext(Dispatchers.IO) {
-        val model = GenerativeModel(
-            "gemini-1.5-flash",
-            BuildConfig.API_KEY,
-            generationConfig = generationConfig {
-                temperature = 1f
-                topK = 64
-                topP = 0.95f
-                maxOutputTokens = 8192
-                responseMimeType = "application/json"
-            },
-            systemInstruction = content { text("Sana verilecek bilgilere göre rastgele bir kitap önerisi ver.") }
+        val response = viewModel.getRandomBookAdvice(
+            interests,
+            favoriteBooks,
+            favoriteAuthors,
+            readingStyle
         )
-
-        val chatHistory = listOf(
-            content("user") {
-                text("\"Kullanıcının ilgi alanları şunlardır: Bilim Kurgu, Kişisel Gelişim, Tarih, Romantik, Polisiye. Kullanıcının en sevdiği kitaplar: 'Dune, Kayıp Zamanın İzinde', en sevdiği yazarlar: 'Isaac Asimov, Haruki Murakami', tercih ettiği kitap uzunluğu: 'orta', okuma tarzı: 'kurgusal', daha önce okuduğu ve sevdiği kitaplardan biri: '1984'.")
-            }
-        )
-
-        val chat = model.startChat(chatHistory)
-        val prompt =
-            "Kullanıcının ilgi alanları şunlardır: Bilim Kurgu, Kişisel Gelişim, Tarih, Romantik, Polisiye. " +
-                    "Kullanıcının en sevdiği kitaplar: 'Dune, Kayıp Zamanın İzinde', " +
-                    "en sevdiği yazarlar: 'Isaac Asimov, Haruki Murakami', " +
-                    "tercih ettiği kitap uzunluğu: 'orta', okuma tarzı: 'kurgusal', " +
-                    "daha önce okuduğu ve sevdiği kitaplardan biri: '1984'."
-
-        val response = chat.sendMessage(prompt)
-        Log.d("Test", response.text.toString())
-
-        // Parse JSON response to BookAdvice object
-        val bookAdvice = Gson().fromJson(response.text, BookAdvice::class.java)
-
-        // Create the final response structure
-        return@withContext Response(
-            response = bookAdvice
-        )
-    }
-}
-
-
-
-
-suspend fun getRandomBookAdvice(): Response {
-    return withContext(Dispatchers.IO) {
-        val generativeModel = GenerativeModel(
-            modelName = "gemini-1.5-flash",
-            apiKey = BuildConfig.API_KEY,
-            generationConfig = generationConfig {
-                responseMimeType = "application/json"
-                responseSchema = Schema(
-                    name = "bookAdvice",
-                    description = "Sana verilecek bilgilere göre rastgele bir kitap önerisi ver. Kullanıcının verdiği bilgilerde geçen kitapları verme sakın!.",
-                    type = FunctionType.OBJECT,
-                    properties = mapOf(
-                        "kitap_adi" to Schema(
-                            name = "kitap_adi",
-                            description = "Name of the book",
-                            type = FunctionType.STRING,
-                            nullable = false
-                        ),
-                        "yazar" to Schema(
-                            name = "yazar",
-                            description = "Author of the book",
-                            type = FunctionType.STRING,
-                            nullable = false
-                        ),
-                        "yayın_yili" to Schema(
-                            name = "yayın_yili",
-                            description = "Publication year",
-                            type = FunctionType.NUMBER,
-                            nullable = false
-                        ),
-                        "ana_karakterler" to Schema(
-                            name = "ana_karakterler",
-                            description = "Main characters",
-                            type = FunctionType.ARRAY,
-                            items = Schema(
-                                name = "character",
-                                description = "A character in the book",
-                                type = FunctionType.STRING,
-                                nullable = false
-                            )
-                        ),
-                        "ozet" to Schema(
-                            name = "ozet",
-                            description = "Summary of the book",
-                            type = FunctionType.STRING,
-                            nullable = false
-                        ),
-                        "ortalama_puan" to Schema(
-                            name = "ortalama_puan",
-                            description = "Average rating of the book",
-                            type = FunctionType.NUMBER,
-                            nullable = false
-                        )
-                    ),
-                    required = listOf("kitap_adi", "yazar", "yayın_yili", "ozet")
-                )
-            }
-        )
-        val prompt =
-            "Kullanıcının ilgi alanları şunlardır: Bilim Kurgu, Kişisel Gelişim, Tarih, Romantik, Polisiye. " +
-                    "Kullanıcının en sevdiği kitaplar: 'Dune, Kayıp Zamanın İzinde', " +
-                    "en sevdiği yazarlar: 'Isaac Asimov, Haruki Murakami', " +
-                    "tercih ettiği kitap uzunluğu: 'orta', okuma tarzı: 'kurgusal', " +
-                    "daha önce okuduğu ve sevdiği kitaplardan biri: '1984'."
-
-        // Get the response from the generative model
-        val response = generativeModel.generateContent(prompt)
-
-        Log.d("Test", response.text.toString())
-
-        // Parse JSON response to BookAdvice object
-        val bookAdvice = Gson().fromJson(response.text, BookAdvice::class.java)
-
-        // Create the final response structure
-        return@withContext Response(
-            response = bookAdvice
-        )
+        onResult(response)
     }
 }

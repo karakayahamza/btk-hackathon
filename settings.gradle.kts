@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "btk-hackathon"
 include(":app")
- 
