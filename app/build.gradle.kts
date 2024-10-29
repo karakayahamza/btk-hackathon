@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
     id("com.google.dagger.hilt.android")
+
 }
 
 android {
@@ -74,6 +75,7 @@ dependencies {
     implementation(libs.generativeai)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -99,4 +101,11 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     kapt(libs.androidx.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    // Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    // gson converter
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation("io.coil-kt:coil-compose:2.0.0")
 }

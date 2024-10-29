@@ -23,6 +23,7 @@ hiltAndroid = "2.51.1"
 hiltAndroidCompiler = "2.51.1"
 hiltWork = "1.2.0"
 hiltCompiler = "1.2.0"
+runtimeLivedata = "1.7.4"
 
 
 [libraries]
@@ -56,6 +57,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

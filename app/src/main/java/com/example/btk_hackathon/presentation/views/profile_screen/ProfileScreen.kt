@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.btk_hackathon.BuildConfig
 import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.content
 import com.google.ai.client.generativeai.type.generationConfig
 import kotlinx.coroutines.CoroutineScope
@@ -29,53 +29,62 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun ProfileScreen() {
+    var bookTitle = "Harry Potter"
+    var coverEditionKey = "Harry Potter"
+
     var bookName by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
+    var advice by remember { mutableStateOf("") }  // Sonuç için bir state değişkeni
 
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(
+            text = "Kitap: $bookTitle",
+            color = Color.White,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
+        TextField(
+            value = bookName,
+            onValueChange = { bookName = it },
+            label = { Text("İlgi Alanları (örn: Bilim Kurgu, Kişisel Gelişim)") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-    Column {
+        Button(
+            onClick = {
+                isLoading = true
+                fetchBookAdvice(bookTitle) { result ->
+                    isLoading = false
+                    advice = result
+                }
+            },
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text("Öneri Al")
+        }
 
         if (isLoading) {
             CircularProgressIndicator()
         } else {
-            TextField(
-                value = bookName,
-                onValueChange = { bookName = it },
-                label = { Text("İlgi Alanları (örn: Bilim Kurgu, Kişisel Gelişim)") },
-                modifier = Modifier.fillMaxWidth()
+
+            Log.d("Advice", advice.toString())
+
+            Text(
+                text = advice,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(top = 16.dp)
             )
-            Button(
-                onClick = {
-                    isLoading = true
-
-
-                    fetchBookAdvice(
-                        bookName
-                    ) {
-                        isLoading = false
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.primary)
-            ) {
-                Text(text = "Rastgele Kitap Önerisi Al", color = Color.White)
-            }
         }
     }
 }
 
-
 fun fetchBookAdvice(
-    booName: String,
+    title: String,
     onResult: (String) -> Unit
 ) {
     CoroutineScope(Dispatchers.IO).launch {
-        val response = getRandomQuestions(
-            booName
-        )
+        val response = getRandomQuestions(title)
         onResult(response)
     }
 }
@@ -92,24 +101,16 @@ suspend fun getRandomQuestions(bookName: String): String {
                 maxOutputTokens = 8192
                 responseMimeType = "application/json"
             },
-            systemInstruction = content { text("Sana verilecek bilgilere göre rastgele 10 tane kitap önerisi ver.") },
+            systemInstruction = content { text("Sana bir kitap ismi verilcek." +
+                    " Bu isim türkçe veya ingilizce olabilir. " +
+                    "Bana bu kitabın uzun ve detaylı bir Türkçe özetini," +
+                    " kitabın yazarını ve kısa biografisini , kitabın yayın tarihini, kitabın türünü döndür.") },
         )
 
-        val chatHistory = listOf(
-            content("user") {
-                text("Harry Potter Ateş Kadehi")
-            },
-            content("model") {
-                text(
-                    "```json\n{\"questions\": [{\"cevaplar\": [\"Cedric Diggory\", \"Viktor Krum\", \"Fleur Delacour\", \"Harry Potter\"], \"dogru_cevap\": \"Harry Potter\", \"soru\": \"Hangi büyücü Ateş Kadehi'ni kazandı?\"}, {\"cevaplar\": [\"Hogwarts\", \"Beauxbatons\", \"Durmstrang\", \"Poudlard\"], \"dogru_cevap\": \"Durmstrang\", \"soru\": \"Viktor Krum hangi büyücülük okulundan?\"}, {\"cevaplar\": [\"Albus Dumbledore\", \"Barty Crouch Jr.\", \"Alastor Moody\", \"Severus Snape\"], \"dogru_cevap\": \"Barty Crouch Jr.\", \"soru\": \"Kim Harry Potter'ı Turnuva'ya girmeye zorladı?\"}, {\"cevaplar\": [\"Cedric Diggory\", \"Viktor Krum\", \"Fleur Delacour\", \"Harry Potter\"], \"dogru_cevap\": \"Cedric Diggory\", \"soru\": \"Turnuva'da kim öldürüldü?\"}, {\"cevaplar\": [\"Lord Voldemort\", \"Peter Pettigrew\", \"Barty Crouch Jr.\", \"Bellatrix Lestrange\"], \"dogru_cevap\": \"Lord Voldemort\", \"soru\": \"Turnuva'nın arkasındaki gerçek kötü kim?\"}, {\"cevaplar\": [\"Harry Potter\", \"Hermione Granger\", \"Ron Weasley\", \"Neville Longbottom\"], \"dogru_cevap\": \"Harry Potter\", \"soru\": \"Kim Turnuva'nın son görevini tamamladı?\"}, {\"cevaplar\": [\"Ejderha\", \"Su Perisi\", \"Labirent\", \"Mezarlık\"], \"dogru_cevap\": \"Ejderha\", \"soru\": \"Turnuva'nın ilk görevi neydi?\"}, {\"cevaplar\": [\"Cedric Diggory\", \"Viktor Krum\", \"Fleur Delacour\", \"Harry Potter\"], \"dogru_cevap\": \"Fleur Delacour\", \"soru\": \"Hangi büyücü su perisi görevini tamamlayamadı?\"}, {\"cevaplar\": [\"Albus Dumbledore\", \"Minerva McGonagall\", \"Rubeus Hagrid\", \"Severus Snape\"], \"dogru_cevap\": \"Rubeus Hagrid\", \"soru\": \"Kim Turnuva'nın baş hakemiydi?\"}, {\"cevaplar\": [\"Hogwarts\", \"Beauxbatons\", \"Durmstrang\", \"Poudlard\"], \"dogru_cevap\": \"Hogwarts\", \"soru\": \"Hangi okul Turnuva'yı kazandı?\"}]}\n\n```"
-                )
-            },
-        )
-
+        val chatHistory = emptyList<Content>()
         val chat = model.startChat(chatHistory)
-        val prompt = bookName
 
-        val response = chat.sendMessage(prompt)
+        val response = chat.sendMessage(bookName)
         Log.d("Dest", response.text.toString())
         return@withContext response.text.toString()
     }
