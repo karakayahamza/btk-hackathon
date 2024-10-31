@@ -29,12 +29,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,11 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.btk_hackathon.domain.model.BookDto
 import com.example.btk_hackathon.presentation.components.BottomBar
 import com.example.btk_hackathon.presentation.navigation.MainScreenNavHost
 import com.example.btk_hackathon.presentation.navigation.NavigationGraph
-import com.example.btk_hackathon.presentation.views.BookViewModel
 import com.example.btk_hackathon.ui.theme.BtkhackathonTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -71,73 +65,73 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun BookListScreen(viewModel: BookViewModel, navController: NavHostController) {
-    // Observe the book detail from the ViewModel
-    val openLibBookDetail by viewModel.openLibBookDetails.observeAsState(null)
-
-    // Fetch the book details when the composable is first launched
-    LaunchedEffect(Unit) {
-//        viewModel.getGeminiBookDetail("Harry Potter")
-        viewModel.getOpenLibraryBook("Harry Potter ve Ateş Kadehi")
-    }
-
-    // Show loading state while waiting for data
-    if (openLibBookDetail == null) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Text(text = "Yükleniyor...")
-        }
-    } else {
-        // Show book details if available
-        LazyColumn {
-
-            items(openLibBookDetail!!.size){book->
-                BookItem(geminiBookDetail = openLibBookDetail!![book], onItemClick = {
-                    navController.navigate("bookDetail/${openLibBookDetail!![book].title}/${openLibBookDetail!![book].authorName}") // Use title and author for navigation
-                })
-            }
-        }
-
-
-
-    }
-}
-
-@Composable
-fun BookItem(
-    geminiBookDetail: BookDto,
-    onItemClick: (BookDto) -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .shadow(2.dp)
-            .clickable { onItemClick(geminiBookDetail) },
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = geminiBookDetail.authorName[0], style = MaterialTheme.typography.bodySmall)
-            Text(text = geminiBookDetail.title, style = MaterialTheme.typography.bodySmall)
-            Text(
-                text = "Tür: ${geminiBookDetail.coverEditionKey}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "Yayın Tarihi: ${geminiBookDetail.ratingsCount}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "Özet: ${geminiBookDetail.title}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-    }
-}
+//@Composable
+//fun BookListScreen(viewModel: BookViewModel, navController: NavHostController) {
+//    // Observe the book detail from the ViewModel
+//    val openLibBookDetail by viewModel.openLibBookDetails.observeAsState(null)
+//
+//    // Fetch the book details when the composable is first launched
+//    LaunchedEffect(Unit) {
+////        viewModel.getGeminiBookDetail("Harry Potter")
+//        viewModel.getOpenLibraryBook("Harry Potter ve Ateş Kadehi")
+//    }
+//
+//    // Show loading state while waiting for data
+//    if (openLibBookDetail == null) {
+//        Box(
+//            contentAlignment = Alignment.Center,
+//            modifier = Modifier.fillMaxSize()
+//        ) {
+//            Text(text = "Yükleniyor...")
+//        }
+//    } else {
+//        // Show book details if available
+//        LazyColumn {
+//
+//            items(openLibBookDetail!!.size){book->
+//                BookItem(geminiBookDetail = openLibBookDetail!![book], onItemClick = {
+//                    navController.navigate("bookDetail/${openLibBookDetail!![book].title}/${openLibBookDetail!![book].authorName}") // Use title and author for navigation
+//                })
+//            }
+//        }
+//
+//
+//
+//    }
+//}
+//
+//@Composable
+//fun BookItem(
+//    geminiBookDetail: BookDto,
+//    onItemClick: (BookDto) -> Unit
+//) {
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(8.dp)
+//            .shadow(2.dp)
+//            .clickable { onItemClick(geminiBookDetail) },
+//        shape = RoundedCornerShape(8.dp),
+//        elevation = CardDefaults.cardElevation(4.dp)
+//    ) {
+//        Column(modifier = Modifier.padding(16.dp)) {
+//            Text(text = geminiBookDetail.authorName[0], style = MaterialTheme.typography.bodySmall)
+//            Text(text = geminiBookDetail.title, style = MaterialTheme.typography.bodySmall)
+//            Text(
+//                text = "Tür: ${geminiBookDetail.coverEditionKey}",
+//                style = MaterialTheme.typography.bodyMedium
+//            )
+//            Text(
+//                text = "Yayın Tarihi: ${geminiBookDetail.ratingsCount}",
+//                style = MaterialTheme.typography.bodyMedium
+//            )
+//            Text(
+//                text = "Özet: ${geminiBookDetail.title}",
+//                style = MaterialTheme.typography.bodyMedium
+//            )
+//        }
+//    }
+//}
 
 
 @Composable

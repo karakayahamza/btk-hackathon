@@ -5,7 +5,7 @@ import androidx.room.TypeConverter
 class Converters {
     @TypeConverter
     fun fromCharacterList(value: List<String>?): String? {
-        return value?.joinToString(",") // Listeyi virgülle birleştir
+        return value?.joinToString(",")
     }
 
     @TypeConverter

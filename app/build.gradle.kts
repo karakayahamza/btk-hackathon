@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
     id("com.google.dagger.hilt.android")
+    id("kotlinx-serialization")
 
 }
 
@@ -84,15 +85,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.generativeai.v090)
-    implementation (libs.gson)
-    implementation (libs.androidx.navigation.compose)
+    implementation(libs.gson)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
     //noinspection KaptUsageInsteadOfKsp
     kapt(libs.androidx.room.compiler)
-    implementation("androidx.room:room-ktx:$2.0.4")
+    implementation(libs.androidx.room.ktx)
 
-    implementation (libs.androidx.preference.ktx)
+    implementation(libs.androidx.preference.ktx)
 
     implementation(libs.lottie.compose)
 
@@ -103,9 +104,15 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     // Retrofit
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation(libs.retrofit)
     // gson converter
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation(libs.converter.gson)
 
-    implementation("io.coil-kt:coil-compose:2.0.0")
+    implementation(libs.coil.compose)
+
+    implementation(libs.androidx.work.runtime)
+
+    implementation(libs.kotlinx.serialization.json)
+
+    implementation (libs.material3)
 }

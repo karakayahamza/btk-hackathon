@@ -1,47 +1,43 @@
 package com.example.btk_hackathon.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.btk_hackathon.BookListScreen
 import com.example.btk_hackathon.MainActivity
 import com.example.btk_hackathon.MainScreen
-import com.example.btk_hackathon.presentation.views.BookViewModel
-import com.example.btk_hackathon.presentation.views.SplashScreen
-import com.example.btk_hackathon.presentation.views.home_screen.HomeScreen
-import com.example.btk_hackathon.presentation.views.profile_screen.ProfileScreen
-import com.example.btk_hackathon.presentation.views.settings_screen.SettingsScreen
-import com.example.btk_hackathon.presentation.views.welcome_screen.OnboardingScreen
+import com.example.btk_hackathon.presentation.Screen
+import com.example.btk_hackathon.presentation.my_library.views.MyLibraryScreen
+import com.example.btk_hackathon.presentation.search_book.view.SearchBookScreen
+import com.example.btk_hackathon.presentation.profile_screen.ProfileScreen
+import com.example.btk_hackathon.presentation.splash_screen.SplashScreen
+import com.example.btk_hackathon.presentation.welcome_screen.OnboardingScreen
 
 
 @Composable
 fun NavigationGraph(context: MainActivity, navController: NavHostController) {
-    NavHost(navController, startDestination = Routes.SplashScreen.route) {
+    NavHost(navController, startDestination = Screen.SplashScreen.route) {
 
-        composable(Routes.SplashScreen.route){
+        composable(Screen.SplashScreen.route) {
             SplashScreen(
-                navController = navController,
-                context = context
+                navController = navController, context = context
             )
         }
 
 
-        composable(Routes.BookListScreen.route) {
-            val viewModel: BookViewModel = hiltViewModel()
-            BookListScreen(viewModel, navController)
-        }
-        composable(Routes.OnBoardScreen.route) {
+//        composable(Screen.BookListScreen.route) {
+//            val viewModel: BookViewModel = hiltViewModel()
+//            BookListScreen(viewModel, navController)
+//        }
+        composable(Screen.OnBoardScreen.route) {
             OnboardingScreen(
-                navController = navController,
-                context = context
+                navController = navController, context = context
             )
         }
-        composable(Routes.MainScreen.route) {
+        composable(Screen.MainScreen.route) {
             MainScreen(context = context, navController = navController)
         }
-//        composable(Routes.Profile.route) { backStackEntry ->
+//        composable(Screen.Profile.route) { backStackEntry ->
 //            val bookTitle = backStackEntry.arguments?.getString("bookTitle")
 //            val coverEditionKey = backStackEntry.arguments?.getString("coverEditionKey")
 //            if (bookTitle != null && coverEditionKey != null) {
@@ -53,21 +49,21 @@ fun NavigationGraph(context: MainActivity, navController: NavHostController) {
 
 @Composable
 fun MainScreenNavHost(mainNavController: NavHostController) {
-    NavHost(navController = mainNavController, startDestination = Routes.Home.route) {
-        composable(Routes.Home.route) {
-            HomeScreen()
+    NavHost(navController = mainNavController, startDestination = Screen.Home.route) {
+        composable(Screen.Home.route) {
+            SearchBookScreen()
         }
-//        composable(Routes.Profile.route) { backStackEntry ->
+//        composable(Screen.Profile.route) { backStackEntry ->
 //            val bookTitle = backStackEntry.arguments?.getString("bookTitle")
 //            val coverEditionKey = backStackEntry.arguments?.getString("coverEditionKey")
 //            bookTitle?.let { coverEditionKey?.let { it1 -> ProfileScreen() } }
 //        }
 
-        composable(Routes.Profile.route) {
+        composable(Screen.Profile.route) {
             ProfileScreen()
         }
-        composable(Routes.Settings.route) {
-            SettingsScreen()
+        composable(Screen.Settings.route) {
+            MyLibraryScreen()
         }
     }
 }
