@@ -77,6 +77,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -118,4 +119,6 @@ dependencies {
 
     //Google Fonts
     implementation("androidx.compose.ui:ui-text-google-fonts:1.7.3")
+
+    implementation (libs.compose.markdown)
 }

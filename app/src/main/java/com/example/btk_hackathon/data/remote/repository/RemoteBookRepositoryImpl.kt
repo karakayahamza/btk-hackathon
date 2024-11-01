@@ -9,12 +9,14 @@ import com.example.btk_hackathon.domain.model.toBookDto
 import com.example.btk_hackathon.domain.repository.RemoteBookRepository
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.Content
+import com.google.ai.client.generativeai.type.GenerateContentResponse
 import com.google.gson.Gson
 import javax.inject.Inject
 
 class RemoteBookRepositoryImpl @Inject constructor(
     private val bookGenerativeModel: GenerativeModel,
     private val quizGenerativeModel: GenerativeModel,
+    private val chatGenerativeModel: GenerativeModel,
     private val openLibraryBookApi: OpenLibraryBookApi,
 ) : RemoteBookRepository {
     override suspend fun getBookDataFromOpenLibrary(title: String): List<BookDto> {
@@ -42,5 +44,15 @@ class RemoteBookRepositoryImpl @Inject constructor(
         val response = chat.sendMessage("Book: $prompt")
         Log.d("Questions", response.text.toString())
         return Gson().fromJson(response.text, GeminiQuizModel::class.java)
+    }
+
+    override suspend fun getChatMessageFromGemini(
+        prompt: Content,
+        chatHistory: List<Content>
+    ): GenerateContentResponse {
+        val chat = chatGenerativeModel.startChat(chatHistory)
+        val response = chat.sendMessage(prompt)
+        Log.d("Response",response.text.toString())
+        return response
     }
 }

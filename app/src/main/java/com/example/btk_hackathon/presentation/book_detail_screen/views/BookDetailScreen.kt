@@ -3,7 +3,6 @@ package com.example.btk_hackathon.presentation.book_detail_screen.views
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,12 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -138,23 +137,33 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     FilledTonalButton(
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            MaterialTheme.colorScheme.surface.copy(
+                                alpha = 0.9f
+                            )
+                        ),
                         onClick = {
-                            Log.d("Button Click", "Test Yourself button clicked")
+                            Log.d("Button Click", "Quiz button clicked")
                             bookNavController.navigate(Screen.QuizScreen.createRoute(book.title))
                         }
                     ) {
-                        Text(text = "Test Yourself")
+                        Text(text = "Quiz", color = MaterialTheme.colorScheme.onBackground)
                     }
 
                     Spacer(modifier = Modifier.weight(1f))
 
                     FilledTonalButton(
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            MaterialTheme.colorScheme.surface.copy(
+                                alpha = 0.9f
+                            )
+                        ),
                         onClick = {
-                            Log.d("Button Click", "Ask Chattie button clicked")
+                            Log.d("Button Click", "Ask Gemini button clicked")
                             bookNavController.navigate(Screen.GeminiChatScreen.createRoute(book.title))
                         }
                     ) {
-                        Text(text = "Ask Chattie")
+                        Text(text = "Ask Gemini", color = MaterialTheme.colorScheme.onBackground)
                     }
                 }
             }
@@ -267,7 +276,8 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            if (book.main_characters.isNotEmpty()) {
+            if (book.main_characters.size != 1 && book.main_characters.isNotEmpty()) {
+                Log.d("SIZE",book.main_characters.size.toString())
                 item {
                     Card(
                         shape = RoundedCornerShape(12.dp),
@@ -290,6 +300,8 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                 }
 
                 items(book.main_characters.size) { index ->
+
+                    Log.d("MAIN CHARACTER",book.main_characters.toString())
                     Card(
                         shape = RoundedCornerShape(12.dp),
                         colors = CardDefaults.cardColors(

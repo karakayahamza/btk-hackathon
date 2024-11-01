@@ -2,6 +2,7 @@ package com.example.btk_hackathon.data.di.modules
 
 import com.example.btk_hackathon.data.di.qualifiers.BookDetailGenerativeModel
 import com.example.btk_hackathon.data.di.qualifiers.BookQuizGenerativeModel
+import com.example.btk_hackathon.data.di.qualifiers.ChatGenerativeModel
 import com.example.btk_hackathon.data.local.dao.BookDao
 import com.example.btk_hackathon.data.local.repository.LocalBookRepositoryImpl
 import com.example.btk_hackathon.data.remote.api.OpenLibraryBookApi
@@ -25,11 +26,13 @@ object RepositoryModule {
         openLibraryBookApi: OpenLibraryBookApi,
         @BookQuizGenerativeModel quizGenerativeModel: GenerativeModel,
         @BookDetailGenerativeModel bookGenerativeModel: GenerativeModel,
+        @ChatGenerativeModel chatGenerativeModel: GenerativeModel,
     ): RemoteBookRepository {
         return RemoteBookRepositoryImpl(
             openLibraryBookApi = openLibraryBookApi,
             bookGenerativeModel = bookGenerativeModel,
             quizGenerativeModel = quizGenerativeModel,
+            chatGenerativeModel = chatGenerativeModel
         )
     }
 

@@ -4,6 +4,7 @@ import com.example.btk_hackathon.data.remote.dto.GeminiBookModel
 import com.example.btk_hackathon.data.remote.dto.GeminiQuizModel
 import com.example.btk_hackathon.domain.model.BookDto
 import com.google.ai.client.generativeai.type.Content
+import com.google.ai.client.generativeai.type.GenerateContentResponse
 
 interface RemoteBookRepository {
     suspend fun getBookDataFromOpenLibrary(title: String): List<BookDto>
@@ -11,8 +12,14 @@ interface RemoteBookRepository {
         prompt: String,
         chatHistory: List<Content>
     ): GeminiBookModel
+
     suspend fun getQuizDataFromGemini(
         prompt: String,
         chatHistory: List<Content>
     ): GeminiQuizModel
+
+    suspend fun getChatMessageFromGemini(
+        prompt: Content,
+        chatHistory: List<Content>
+    ): GenerateContentResponse
 }

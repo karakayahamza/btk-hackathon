@@ -3,6 +3,7 @@ package com.example.btk_hackathon.data.di.modules
 import com.example.btk_hackathon.BuildConfig
 import com.example.btk_hackathon.data.di.qualifiers.BookDetailGenerativeModel
 import com.example.btk_hackathon.data.di.qualifiers.BookQuizGenerativeModel
+import com.example.btk_hackathon.data.di.qualifiers.ChatGenerativeModel
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import com.google.ai.client.generativeai.type.generationConfig
@@ -75,10 +76,10 @@ object GenerativeModelModule {
             systemInstruction = content {
                 text(
                     "I want you to take the title of the book you have been given and write 10 questions about it. \n" +
-                    "The questions should have 4 options.\n" +
-                    "You must also send me the correct answer.\n" +
-                    "Explain the correct answers but it must properly explain the correct answer.\n" +
-                    "Do not ask the same questions as before. " +
+                            "The questions should have 4 options.\n" +
+                            "You must also send me the correct answer.\n" +
+                            "Explain the correct answers but it must properly explain the correct answer.\n" +
+                            "Do not ask the same questions as before. " +
                             "{\n" +
                             "  \"questions\": [\n" +
                             "    {\n" +
@@ -89,6 +90,33 @@ object GenerativeModelModule {
                             "    }\n" +
                             "  ]\n" +
                             "}"
+                )
+            }
+        )
+    }
+
+    @ChatGenerativeModel
+    @Provides
+    @Singleton
+    fun provideChatGenerativeModel(): GenerativeModel {
+        return GenerativeModel(
+            modelName = "gemini-1.5-flash",
+            apiKey = BuildConfig.API_KEY,
+            generationConfig = generationConfig {
+                temperature = 1f
+                topK = 64
+                topP = 0.95f
+                maxOutputTokens = 8192
+                responseMimeType = "text/plain"
+            },
+            systemInstruction = content {
+                text(
+                    "You will be given the name of a book." +
+                    " Please take this book title and answer the questions you are given. " +
+                    "But only answer the questions about the book." +
+                    "If you are asked a question about something other than the book, write “Sorry, I can only talk about books”." +
+                    " You can use MarkDown to post your answers better."+
+                    "Just send a text."
                 )
             }
         )
