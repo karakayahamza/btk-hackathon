@@ -1,6 +1,8 @@
-package com.example.btk_hackathon.data.di
+package com.example.btk_hackathon.data.di.modules
 
 import com.example.btk_hackathon.BuildConfig
+import com.example.btk_hackathon.data.di.qualifiers.BookDetailGenerativeModel
+import com.example.btk_hackathon.data.di.qualifiers.BookQuizGenerativeModel
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import com.google.ai.client.generativeai.type.generationConfig
@@ -14,9 +16,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object GenerativeModelModule {
 
+    @BookDetailGenerativeModel
     @Provides
     @Singleton
-    fun provideGenerativeModel(): GenerativeModel {
+    fun provideBookDetailGenerativeModel(): GenerativeModel {
         return GenerativeModel("gemini-1.5-flash",
             BuildConfig.API_KEY,
             generationConfig = generationConfig {
@@ -50,6 +53,42 @@ object GenerativeModelModule {
                         “summary”: “Here is the summary of the book”
                     }
                     """
+                )
+            }
+        )
+    }
+
+    @BookQuizGenerativeModel
+    @Provides
+    @Singleton
+    fun provideBookQuizGenerativeModel(): GenerativeModel {
+        return GenerativeModel(
+            modelName = "gemini-1.5-flash",
+            apiKey = BuildConfig.API_KEY,
+            generationConfig = generationConfig {
+                temperature = 1f
+                topK = 64
+                topP = 0.95f
+                maxOutputTokens = 8192
+                responseMimeType = "application/json"
+            },
+            systemInstruction = content {
+                text(
+                    "I want you to take the title of the book you have been given and write 10 questions about it. \n" +
+                    "The questions should have 4 options.\n" +
+                    "You must also send me the correct answer.\n" +
+                    "Explain the correct answers but it must properly explain the correct answer.\n" +
+                    "Do not ask the same questions as before. " +
+                            "{\n" +
+                            "  \"questions\": [\n" +
+                            "    {\n" +
+                            "      \"answers\": [\"String\", \"String\", \"String\", \"String\"],\n" +
+                            "      \"correct_answer\": \"String\",\n" +
+                            "      \"explanation\": \"String\",\n" +
+                            "      \"question\": \"String\"\n" +
+                            "    }\n" +
+                            "  ]\n" +
+                            "}"
                 )
             }
         )

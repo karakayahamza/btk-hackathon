@@ -2,20 +2,24 @@ package com.example.btk_hackathon.presentation.welcome_screen
 
 import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -25,7 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,7 +41,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.btk_hackathon.MainActivity
 import com.example.btk_hackathon.R
-import com.example.btk_hackathon.presentation.Screen
+import com.example.btk_hackathon.presentation.navigation.Screen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -45,26 +49,30 @@ fun OnboardingScreen(navController: NavHostController, context: MainActivity) {
     val animations =
         listOf(R.raw.woman_reading_book_under_the_tree, R.raw.online_food_order, R.raw.lotti_anim)
     val titles = listOf(
-        "Kitap dünyasına hoş geldiniz!",
-        "Kitap Özetlerine Hızlı Erişim",
-        "Merak Ettiğiniz Her Şeyi Sorun",
-        "Yeni Kitaplar Keşfedin"
+        "Welcome to the world of books!",
+        "Quick Access to Book Abstracts",
+        "Ask Anything You've Ever Wondered",
+        "Discover New Books"
     )
     val descriptions = listOf(
-        "Bu uygulama sayesinde kitap özetlerine ulaşabilir, kitaplarla ilgili sorular sorabilir ve size özel öneriler alabilirsiniz.",
-        "Merak ettiğiniz kitapların özetlerine kolayca ulaşın ve zaman kaybetmeden okuyun. Kitaplar hakkında hızlı bilgi edinin.",
-        "Kitaplar hakkında sorularınız mı var? Uygulamadaki Gemini AI desteği ile kitaplar, yazarlar, içerikler ve daha fazlası hakkında istediğiniz her şeyi sorun, anında cevap alın.",
-        "İlgi alanınıza göre size özel kitap önerileri alın. Yeni kitaplarla tanışın ve okuma listenizi genişletin."
+        "With this app, you can access book summaries, ask questions about books and get personalized recommendations.",
+        "Easily access the summaries of the books you are curious about and read them without wasting time. Get quick information about books.",
+        "Do you have questions about books? Ask anything you want about books, authors, content and more and get instant answers with Gemini AI support in the app.",
+        "Get personalized book recommendations based on your interests. Meet new books and expand your reading list."
     )
     val pagerState = rememberPagerState(pageCount = { animations.size })
 
     Column(
         Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp),
+            .background(MaterialTheme.colorScheme.surface),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
+        val configuration = LocalConfiguration.current
+        val screenHeight = configuration.screenHeightDp.dp
+        val animationSize = screenHeight * 0.4f
+
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
@@ -82,7 +90,7 @@ fun OnboardingScreen(navController: NavHostController, context: MainActivity) {
                 LottieAnimation(
                     composition = composition,
                     iterations = LottieConstants.IterateForever,
-                    modifier = Modifier.size(200.dp)
+                    modifier = Modifier.size(animationSize)
                 )
                 Text(
                     text = titles[currentPage],
@@ -121,41 +129,60 @@ fun ButtonsSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 24.dp),
+                .padding(horizontal = 16.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (pagerState.currentPage != 0) {
-                Text(
-                    text = "Geri",
-                    modifier = Modifier
-                        .clickable {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                if (pagerState.currentPage != 0) {
+                    OutlinedButton(
+                        onClick = {
                             scope.launch {
                                 val prevPage = pagerState.currentPage - 1
                                 if (prevPage >= 0) {
                                     pagerState.scrollToPage(prevPage)
                                 }
                             }
-                        },
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
-                )
+                        }
+                    ) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Back",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                } else {
+                    Box(modifier = Modifier.width(0.dp))
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        scope.launch {
+                            pagerState.scrollToPage(pagerState.currentPage + 1)
+                        }
+                    }
+                ) {
+                    Text(
+                        text = "Next",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(Icons.Default.ArrowForward, contentDescription = "Next")
+                }
             }
 
-            Text(
-                text = "İleri",
-                modifier = Modifier
-                    .clickable {
-                        scope.launch { pagerState.scrollToPage(pagerState.currentPage + 1) }
-                    },
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black
-            )
+
         }
     } else {
-        Row(modifier = Modifier.padding(vertical = 12.dp)) {
+        Row(modifier = Modifier.padding(vertical = 16.dp)) {
             OutlinedButton(
                 onClick = {
                     setOnboardingFinished(context)
@@ -163,16 +190,14 @@ fun ButtonsSection(
                         popUpTo(Screen.OnBoardScreen.route) { inclusive = true }
                     }
                 },
-                colors = ButtonDefaults.outlinedButtonColors(containerColor = Color(0x25E92F1E)),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             ) {
                 Text(
-                    text = "Hadi Başlayalım",
+                    text = "Let's get started",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
                 )
             }
         }
@@ -183,7 +208,6 @@ fun ButtonsSection(
 fun PageIndicator(pageCount: Int, currentPage: Int) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        //modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         repeat(pageCount) {
@@ -194,12 +218,11 @@ fun PageIndicator(pageCount: Int, currentPage: Int) {
 
 @Composable
 fun IndicatorSingleDot(isSelected: Boolean) {
-    val color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray
     Box(
         modifier = Modifier
             .size(if (isSelected) 12.dp else 8.dp)
             .clip(CircleShape)
-            .background(color)
+            .background(MaterialTheme.colorScheme.secondary)
     )
 }
 

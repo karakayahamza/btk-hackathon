@@ -1,7 +1,6 @@
 package com.example.btk_hackathon.presentation.navigation
 
 import com.example.btk_hackathon.R
-import com.example.btk_hackathon.presentation.Screen
 
 data class BottomNavItem(
     val route: String,
@@ -12,7 +11,7 @@ data class BottomNavItem(
 object BottomNavigationItems {
     val items = listOf(
         BottomNavItem(
-            route = Screen.Settings.route,
+            route = Screen.MyLibraryScreen.route,
             title = "My Library",
             iconResId = R.drawable.library,
         ),

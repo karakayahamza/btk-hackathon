@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,7 +29,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.btk_hackathon.MainActivity
 import com.example.btk_hackathon.R
-import com.example.btk_hackathon.presentation.Screen
+import com.example.btk_hackathon.presentation.navigation.Screen
 import kotlinx.coroutines.delay
 
 @Composable
@@ -62,19 +61,20 @@ fun SplashScreen(navController: NavHostController, context: MainActivity) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White),
+            .background(MaterialTheme.colorScheme.surface),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LoaderAnimation(
-            modifier = Modifier.size(400.dp), anim = R.raw.splash
+            modifier = Modifier.size(400.dp), anim = R.raw.splash2
         )
         Spacer(modifier = Modifier.height(25.dp))
         Text(
-            text = "Öğren Genç",
+            text = "BookNest",
             modifier = Modifier.alpha(alpha.value),
             fontSize = 52.sp,
-            fontWeight = FontWeight.Light
+            fontWeight = FontWeight.Light,
+            color = MaterialTheme.colorScheme.secondary
         )
     }
 }

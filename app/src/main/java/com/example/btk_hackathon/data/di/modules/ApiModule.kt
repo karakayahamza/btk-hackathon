@@ -1,4 +1,4 @@
-package com.example.btk_hackathon.data.di
+package com.example.btk_hackathon.data.di.modules
 
 import com.example.btk_hackathon.Util.Util.BASE_URL
 import com.example.btk_hackathon.data.remote.api.OpenLibraryBookApi

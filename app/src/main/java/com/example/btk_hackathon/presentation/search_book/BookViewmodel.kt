@@ -9,7 +9,7 @@ import com.example.btk_hackathon.data.local.model.BookEntity
 import com.example.btk_hackathon.domain.use_cases.GetGeminiBookDetailUseCase
 import com.example.btk_hackathon.domain.use_cases.GetOpenLibraryBookUseCase
 import com.example.btk_hackathon.domain.use_cases.InsertBookToDatabaseUseCase
-import com.example.btk_hackathon.presentation.SaveState
+import com.example.btk_hackathon.presentation.state.SaveState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

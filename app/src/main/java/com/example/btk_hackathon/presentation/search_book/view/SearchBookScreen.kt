@@ -39,9 +39,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,7 +54,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.btk_hackathon.R
 import com.example.btk_hackathon.domain.model.BookDto
-import com.example.btk_hackathon.presentation.SaveState
+import com.example.btk_hackathon.presentation.state.SaveState
 import com.example.btk_hackathon.presentation.search_book.SearchBookState
 import com.example.btk_hackathon.presentation.search_book.SearchBookViewModel
 
@@ -104,7 +108,7 @@ fun SearchBookScreen() {
                 .padding(paddingValues)
         )
         {
-            Column(modifier = Modifier.padding(start = 8.dp, end = 8.dp)) {
+            Column(modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp)) {
                 SearchInputField(searchQuery, onSearchQueryChange = { searchQuery = it }) {
                     viewModel.getOpenLibraryBook(query = searchQuery)
                 }
@@ -169,12 +173,26 @@ fun SearchInputField(
 
 @Composable
 fun EmptySearchMessage() {
-    Text(
-        text = "Search for books...",
-        style = MaterialTheme.typography.bodyMedium,
-        modifier = Modifier.padding(16.dp)
-    )
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Icon(
+            painter = painterResource(id = R.drawable.stack_of_books),
+            contentDescription = "No books found",
+            modifier = Modifier.size(48.dp),
+        )
+        Text(
+            text = "Books are Waiting for You!",
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        Text(
+            text = "Build your library, explore book summaries, engage in discussions, and tackle quizzes!",
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+        )
+    }
 }
+
 
 @Composable
 fun DisplayBooks(books: List<BookDto>?, viewModel: SearchBookViewModel) {
@@ -290,7 +308,6 @@ fun SaveButton(viewModel: SearchBookViewModel, book: BookDto) {
                 }
             }
         },
-        //modifier = Modifier.align(Alignment.End),
         enabled = viewModel.saveState.value == SaveState.Idle
     ) {
         Text("Save to My Library")
@@ -302,25 +319,40 @@ fun FullScreenDialog(onDismiss: () -> Unit, book: BookDto) {
     Dialog(onDismissRequest = onDismiss) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.9f))
-                .padding(16.dp),
-            contentAlignment = Alignment.TopEnd
+                .background(Color.Transparent)
         ) {
-            IconButton(onClick = onDismiss) {
+            val configuration = LocalConfiguration.current
+            val screenHeight = configuration.screenHeightDp.dp
+            val imageHeight = screenHeight / 2
+
+            Image(
+                painter = rememberAsyncImagePainter(model = book.coverEditionKey ?: ""),
+                contentDescription = "Book Cover",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(imageHeight)
+                    .clip(MaterialTheme.shapes.medium)
+                    .align(Alignment.Center),
+                contentScale = ContentScale.FillBounds
+            )
+
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+                    .background(
+                        Color.Black.copy(alpha = 0.5f),
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    .clip(MaterialTheme.shapes.medium)
+            ) {
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Close",
                     tint = Color.White
                 )
             }
-            Image(
-                painter = rememberAsyncImagePainter(model = book.coverEditionKey?.toString() ?: ""),
-                contentDescription = "Big Book Image",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(MaterialTheme.shapes.medium)
-            )
         }
     }
 }

@@ -14,6 +14,10 @@ class LocalBookRepositoryImpl @Inject constructor(
         return bookDao.getAllBooks()
     }
 
+    override fun getBooksById(bookId: String): Flow<BookEntity?> {
+        return bookDao.getBookById(bookId = bookId)
+    }
+
     override suspend fun insert(bookEntity: BookEntity) {
         bookDao.insertBook(bookEntity)
     }

@@ -1,4 +1,4 @@
-package com.example.btk_hackathon.data.di
+package com.example.btk_hackathon.data.di.modules
 
 import android.content.Context
 import dagger.Module

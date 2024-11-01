@@ -5,27 +5,22 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -37,9 +32,6 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,35 +40,42 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.btk_hackathon.R
 import com.example.btk_hackathon.data.local.model.BookEntity
+import com.example.btk_hackathon.presentation.navigation.Screen
 import com.example.btk_hackathon.presentation.my_library.MyLibraryUiState
 import com.example.btk_hackathon.presentation.my_library.MyLibraryViewModel
 
 @Composable
-fun MyLibraryScreen() {
+fun MyLibraryScreen(mainNavController: NavHostController) {
     val viewModel: MyLibraryViewModel = hiltViewModel()
     val bookUiState by viewModel.myLibraryUiState.collectAsState()
-
-    var showDialog by remember { mutableStateOf(false) }
-    var selectedBookEntity by remember { mutableStateOf<BookEntity?>(null) }
-
     Scaffold { paddingValues ->
         Surface(modifier = Modifier.background(MaterialTheme.colorScheme.onSurface)) {
-            Column(modifier = Modifier.padding(paddingValues)) {
+            Column(
+                modifier = Modifier.padding(paddingValues)
+            ) {
+                LibraryHeader()
                 when (bookUiState) {
                     is MyLibraryUiState.Loading -> LoadingIndicator()
                     is MyLibraryUiState.Success -> {
                         val books = (bookUiState as MyLibraryUiState.Success).bookEntities
                         if (books.isNotEmpty()) {
-                            LibraryHeader()
-
                             BookList(viewModel, books) { book ->
-                                selectedBookEntity = book
-                                showDialog = true
+                                mainNavController.navigate(Screen.BookDetailScreen.createRoute(book.id.toString())) {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         } else {
                             NoBooksMessage()
@@ -89,17 +88,9 @@ fun MyLibraryScreen() {
                     }
                 }
             }
-
-            selectedBookEntity?.let {
-                if (showDialog) {
-                    BookDetailDialog(bookEntity = it) {
-                        showDialog = false
-                        selectedBookEntity = null
-                    }
-                }
-            }
         }
     }
+
 }
 
 @Composable
@@ -108,16 +99,14 @@ fun BookList(
     books: List<BookEntity>,
     onBookClick: (BookEntity) -> Unit
 ) {
-    LazyColumn {
+    LazyColumn(Modifier.padding(8.dp)) {
         items(books.size) { book ->
-
-            Column(modifier = Modifier.background(Color.White)) {
-                SwipeToDismissBookCard(
-                    viewModel,
-                    bookEntity = books[book],
-                    onBookClick = onBookClick
-                )
-            }
+            SwipeToDismissBookCard(
+                viewModel,
+                bookEntity = books[book],
+                onBookClick = onBookClick
+            )
+            Spacer(modifier = Modifier.padding(8.dp))
         }
     }
 }
@@ -170,8 +159,9 @@ fun DismissBackground(dismissState: SwipeToDismissBoxState) {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(color)
-            .padding(12.dp, 8.dp),
+            .clip(RoundedCornerShape(16.dp))
+            .padding(start = 8.dp)
+            .background(color),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
     ) {
@@ -179,7 +169,8 @@ fun DismissBackground(dismissState: SwipeToDismissBoxState) {
             Icon(
                 Icons.Default.Delete,
                 contentDescription = "Delete",
-                tint = Color.White
+                tint = Color.White,
+                modifier = Modifier.padding(end = 16.dp)
             )
         }
     }
@@ -193,22 +184,34 @@ fun LoadingIndicator() {
 
 @Composable
 fun LibraryHeader() {
-    Card(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        elevation = CardDefaults.elevatedCardElevation(4.dp)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "My Library:",
+            text = "My Library",
             style = MaterialTheme.typography.headlineMedium
         )
     }
 }
 
+
 @Composable
 fun NoBooksMessage() {
-    Text(text = "No books available.", modifier = Modifier.padding(8.dp))
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.empty))
+        LottieAnimation(
+            composition = composition, iterations = LottieConstants.IterateForever,
+            modifier = Modifier.padding(16.dp)
+        )
+    }
 }
 
 @Composable
@@ -225,9 +228,9 @@ fun BookCard(bookEntity: BookEntity, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
             .clickable(onClick = onClick),
-        elevation = CardDefaults.elevatedCardElevation(4.dp)
+        elevation = CardDefaults.elevatedCardElevation(4.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -268,142 +271,7 @@ fun BookInfo(bookEntity: BookEntity) {
         Text(
             text = "by ${bookEntity.author}",
             style = MaterialTheme.typography.bodySmall,
-            color = Color.Gray
-        )
-    }
-}
-
-@Composable
-fun CloseButton(onDismiss: () -> Unit) {
-    IconButton(onClick = onDismiss) {
-        Icon(
-            imageVector = Icons.Default.Close,
-            contentDescription = "Close",
-            tint = Color.White
-        )
-    }
-}
-
-@Composable
-fun BookDetailDialog(bookEntity: BookEntity, onDismiss: () -> Unit) {
-    Dialog(onDismissRequest = onDismiss) {
-        Box(
-            modifier = Modifier
-                .background(Color.White),
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Black)
-                    .clip(RoundedCornerShape(8.dp))
-            ) {
-                Column {
-                    CloseButton(onDismiss)
-                    BookDetailContent(bookEntity)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun BookDetailContent(bookEntity: BookEntity) {
-    LazyColumn(
-        modifier = Modifier
-            .padding(top = 16.dp)
-            .fillMaxWidth()
-            .padding(8.dp),
-        verticalArrangement = Arrangement.Top
-    ) {
-        item {
-            BookDetailImage(bookEntity.cover_edition_key)
-            Spacer(modifier = Modifier.height(16.dp))
-            BookDetails(bookEntity)
-        }
-    }
-}
-
-@Composable
-fun BookDetailImage(coverUrl: String) {
-    Image(
-        painter = rememberAsyncImagePainter(model = coverUrl),
-        contentDescription = "Big Book Image",
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-            .clip(MaterialTheme.shapes.medium),
-        contentScale = ContentScale.Inside
-    )
-}
-
-@Composable
-fun BookDetails(bookEntity: BookEntity) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        elevation = CardDefaults.elevatedCardElevation(4.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = bookEntity.title,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            DetailItem(label = "Genre:", value = bookEntity.genre)
-            DetailItem(label = "Publication Date:", value = bookEntity.publicationDate)
-            DetailItem(label = "Author:", value = bookEntity.author)
-            DetailItem(label = "Biography:", value = bookEntity.authorBiography)
-            DetailItem(label = "Summary:", value = bookEntity.summary)
-
-            if (bookEntity.main_characters.isNotEmpty()) {
-                Text(
-                    text = "Main Characters:",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-                Column(modifier = Modifier.padding(start = 8.dp)) {
-                    bookEntity.main_characters.forEach { character ->
-                        Text(
-                            text = character,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun DetailItem(label: String, value: String) {
-    Column(
-        modifier = Modifier.padding(bottom = 8.dp)
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.secondary
         )
     }
 }

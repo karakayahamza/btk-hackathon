@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalBookRepository {
     fun getBooks(): Flow<List<BookEntity>>
+    fun getBooksById(bookId:String): Flow<BookEntity?>
     suspend fun insert(bookEntity: BookEntity)
     suspend fun delete(bookEntity: BookEntity)
 }
