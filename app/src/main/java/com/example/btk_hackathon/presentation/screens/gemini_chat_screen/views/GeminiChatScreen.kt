@@ -46,7 +46,11 @@ import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.TextPart
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
+import java.util.Locale
 
+fun getUserLanguage(): String {
+    return Locale.getDefault().language
+}
 
 @Composable
 fun GeminiChatScreen(
@@ -64,7 +68,7 @@ fun GeminiChatScreen(
     LaunchedEffect(bookName) {
         val messageContent = Content.Builder().apply {
             role = "user"
-            text("Book name: $bookName")
+            text("Book name: $bookName" + "Language code for this user:" + getUserLanguage())
         }.build()
         viewModel.sendMessageToChat(messageContent)
     }
