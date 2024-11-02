@@ -35,7 +35,7 @@ class MyLibraryViewModel @Inject constructor(private val bookRepository: LocalBo
                 }
                 .collect { data ->
                     _myLibraryUiState.value =
-                        MyLibraryUiState.Success(data ?: emptyList())
+                        MyLibraryUiState.Success(data)
                 }
         }
     }

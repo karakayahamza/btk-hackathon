@@ -1,3 +1,4 @@
+
 package com.example.btk_hackathon.domain.model
 
 import com.example.btk_hackathon.data.remote.dto.Doc

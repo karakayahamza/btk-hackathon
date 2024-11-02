@@ -2,10 +2,6 @@ package com.example.btk_hackathon
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
-import android.content.res.Configuration
-import android.os.Build
-import android.util.Log
 import dagger.hilt.android.HiltAndroidApp
 import java.util.Locale
 

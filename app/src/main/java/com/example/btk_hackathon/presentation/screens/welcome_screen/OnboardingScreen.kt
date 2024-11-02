@@ -17,8 +17,8 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -151,7 +151,7 @@ fun ButtonsSection(
                             }
                         }
                     ) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = "Back",
@@ -176,7 +176,7 @@ fun ButtonsSection(
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Icon(Icons.Default.ArrowForward, contentDescription = stringResource(R.string.next))
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = stringResource(R.string.next))
                 }
             }
 

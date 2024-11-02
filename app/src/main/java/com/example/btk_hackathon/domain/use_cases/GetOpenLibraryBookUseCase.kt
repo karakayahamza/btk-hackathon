@@ -1,5 +1,6 @@
 package com.example.btk_hackathon.domain.use_cases
 
+import android.util.Log
 import com.example.btk_hackathon.Util.Resource
 import com.example.btk_hackathon.domain.model.BookDto
 import com.example.btk_hackathon.domain.repository.RemoteBookRepository

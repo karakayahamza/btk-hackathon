@@ -3,7 +3,6 @@ package com.example.btk_hackathon.presentation.screens.gemini_chat_screen
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.btk_hackathon.Util.Resource
@@ -31,7 +30,6 @@ class ChatViewModel @Inject constructor(
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val _responseState = MutableLiveData<ChatState>().apply { value = ChatState() }
-    val responseState: LiveData<ChatState> get() = _responseState
 
 
     private fun addMessage(content: Content) {

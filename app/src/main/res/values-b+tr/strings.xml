@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BookNest</string>
-    <string name="the_book_is_being_added_to_the_library">Kitap kütüphaneye ekleniyor...</string>
-    <string name="search_book">Kitap ara...</string>
+    <string name="the_book_is_being_added_to_the_library">Kitap kütüphaneye ekleniyor…</string>
+    <string name="search_book">Kitap ara…</string>
     <string name="search">Ara</string>
     <string name="build_your_library_explore_book_summaries_engage_in_discussions_and_tackle_quizzes">Kütüphaneni oluştur, kitap özetlerini keşfet, tartışmalara katıl ve quizleri çöz!</string>
     <string name="books_are_waiting_for_you">Sizi bekleyen kitaplar var!</string>
@@ -26,7 +26,7 @@
     <string name="user">kullanıcı</string>
     <string name="send_message">Mesajı Gönder</string>
     <string name="ask_anything_you_want_about_books">Kitaplar hakkında istediğin her şeyi sor!</string>
-    <string name="gemini_writes">Gemini yazıyor...</string>
+    <string name="gemini_writes">Gemini yazıyor…</string>
     <string name="text_copied_to_clipboard">Metin panoya kopyalandı</string>
     <string name="book_deleted">Kitap silindi</string>
     <string name="delete">Sil</string>
@@ -35,7 +35,7 @@
     <string name="settings">Ayarlar</string>
     <string name="language">Dil</string>
     <string name="choose_your_preferred_language">Tercih ettiğiniz dili seçin</string>
-    <string name="coming_soon">Yolda...</string>
+    <string name="coming_soon">Yolda…</string>
     <string name="notifications">Bildirimler</string>
     <string name="enable_or_disable_notifications">Bildirimleri aç veya kapat</string>
     <string name="privacy_policy">Gizlilik Politikası</string>

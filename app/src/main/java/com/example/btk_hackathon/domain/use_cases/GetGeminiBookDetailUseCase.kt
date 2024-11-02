@@ -3,8 +3,6 @@ package com.example.btk_hackathon.domain.use_cases
 import com.example.btk_hackathon.Util.Resource
 import com.example.btk_hackathon.data.remote.dto.GeminiBookModel
 import com.example.btk_hackathon.domain.repository.RemoteBookRepository
-import com.google.ai.client.generativeai.type.Content
-import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -22,7 +20,7 @@ class GetGeminiBookDetailUseCase @Inject constructor(
                 val response =
                     repository.getBookDataFromGemini(
                         bookName,
-                        emptyList<Content>()
+                        emptyList()
                     )
                 emit(Resource.Success(response))
             } catch (e: Exception) {

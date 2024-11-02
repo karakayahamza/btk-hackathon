@@ -14,7 +14,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import java.util.Locale
 
 fun getUserLanguage(context: Context): String {
     val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)

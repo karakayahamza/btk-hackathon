@@ -66,6 +66,7 @@ class SearchBookViewModel @Inject constructor(
 
                     is Resource.Error -> {
                         _saveState.value = SaveState.Error("Failed to fetch book details.")
+
                     }
 
                     is Resource.Loading -> _saveState.value = SaveState.Loading

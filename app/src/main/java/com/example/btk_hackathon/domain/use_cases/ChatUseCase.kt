@@ -2,7 +2,6 @@ package com.example.btk_hackathon.domain.use_cases
 
 import android.util.Log
 import com.example.btk_hackathon.Util.Resource
-import com.example.btk_hackathon.domain.repository.LocalBookRepository
 import com.example.btk_hackathon.domain.repository.RemoteBookRepository
 import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.GenerateContentResponse
