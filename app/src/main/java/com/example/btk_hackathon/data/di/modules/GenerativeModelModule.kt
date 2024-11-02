@@ -27,11 +27,11 @@ object GenerativeModelModule {
     @BookDetailGenerativeModel
     @Provides
     @Singleton
-    fun provideBookDetailGenerativeModel(): GenerativeModel {
+    fun provideBookDetailGenerativeModel(@ApplicationContext context: Context): GenerativeModel {
         return GenerativeModel("gemini-1.5-flash",
             BuildConfig.API_KEY,
             generationConfig = generationConfig {
-                temperature = 1f
+                temperature = 0.5f
                 topK = 64
                 topP = 0.95f
                 maxOutputTokens = 8192
@@ -41,7 +41,8 @@ object GenerativeModelModule {
                 text(
                     """
                     You will be given the name of a book. Return me the following details of this book in JSON format with the specified key names:
-                    - Write everything in the language in which the book is given to you.
+                    - Write everything in the."""+ getUserLanguage(context) +
+                     """
                     - A long and detailed summary (“summary”)
                     - Author of the book (“author”)
                     - Short biography of the author (“author_biography”)
@@ -69,12 +70,12 @@ object GenerativeModelModule {
     @BookQuizGenerativeModel
     @Provides
     @Singleton
-    fun provideBookQuizGenerativeModel(): GenerativeModel {
+    fun provideBookQuizGenerativeModel(@ApplicationContext context: Context): GenerativeModel {
         return GenerativeModel(
             modelName = "gemini-1.5-flash",
             apiKey = BuildConfig.API_KEY,
             generationConfig = generationConfig {
-                temperature = 1f
+                temperature = 0.5f
                 topK = 64
                 topP = 0.95f
                 maxOutputTokens = 8192
@@ -84,6 +85,7 @@ object GenerativeModelModule {
                 text(
                     "I want you to take the title of the book you have been given and write 10 questions about it. \n" +
                             "The questions should have 4 options.\n" +
+                            "User's language code for this instance:" + getUserLanguage(context) +
                             "You must also send me the correct answer.\n" +
                             "Explain the correct answers but it must properly explain the correct answer.\n" +
                             "Do not ask the same questions as before. " +

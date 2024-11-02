@@ -50,10 +50,7 @@ import com.google.ai.client.generativeai.type.TextPart
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
 import java.util.Locale
-
-fun getUserLanguage(): String {
-    return Locale.getDefault().language
-}
+//https://openlibrary.org/search.json?q=harry%20potter%20ve%20s%C4%B1rlar%20odas%C4%B1&availability&lang=tr&limit=1
 
 @Composable
 fun GeminiChatScreen(
@@ -82,7 +79,6 @@ fun GeminiChatScreen(
         viewModel.sendMessageToChat(messageContent)
     }
 
-
     Scaffold(bottomBar = {
         Row(
             modifier = Modifier
@@ -106,7 +102,7 @@ fun GeminiChatScreen(
                 onClick = {
                     if (newMessage.isNotBlank()) {
                         val messageContent = Content.Builder().apply {
-                            role = context.getString(R.string.user)
+                            role = "user"
                             text(newMessage)
                         }.build()
 
