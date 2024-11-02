@@ -19,11 +19,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
@@ -142,14 +143,18 @@ fun ContactSupportDialog(onDismiss: () -> Unit) {
         title = { Text(text = "Contact Support") },
         text = {
             Column {
-                Text("You can reach out to us via the following channels:")
+
+                Text("Hamza Karakaya", style = TextStyle(fontWeight = FontWeight.Bold))
 
                 // LinkedIn
                 Text(
-                    text = "LinkedIn: Hamza Karakaya",
+                    text = "LinkedIn",
                     modifier = Modifier
                         .clickable {
-                            openLink(context, "https://www.linkedin.com/in/hamza-karakaya-684a101b6/")
+                            openLink(
+                                context,
+                                "https://www.linkedin.com/in/hamza-karakaya-684a101b6/"
+                            )
                         }
                         .padding(vertical = 4.dp),
                     color = MaterialTheme.colorScheme.primary
@@ -157,7 +162,7 @@ fun ContactSupportDialog(onDismiss: () -> Unit) {
 
                 // GitHub
                 Text(
-                    text = "GitHub: @karakayahamza",
+                    text = "Github",
                     modifier = Modifier
                         .clickable {
                             openLink(context, "https://github.com/karakayahamza")
@@ -168,7 +173,7 @@ fun ContactSupportDialog(onDismiss: () -> Unit) {
 
                 // Email
                 Text(
-                    text = "Email: hamza.karakaya77@outlook.com",
+                    text = "hamza.karakaya77@outlook.com",
                     modifier = Modifier
                         .clickable {
                             openEmailClient(context, "hamza.karakaya77@outlook.com")
@@ -176,6 +181,44 @@ fun ContactSupportDialog(onDismiss: () -> Unit) {
                         .padding(vertical = 4.dp),
                     color = MaterialTheme.colorScheme.primary
                 )
+
+
+
+                Text("Ferhat Çelik", style = TextStyle(fontWeight = FontWeight.Bold))
+
+                // LinkedIn
+                Text(
+                    text = "LinkedIn",
+                    modifier = Modifier
+                        .clickable {
+                            openLink(context, "https://linkedin.com/in/ferhatcelik1")
+                        }
+                        .padding(vertical = 4.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                // GitHub
+                Text(
+                    text = "Github",
+                    modifier = Modifier
+                        .clickable {
+                            openLink(context, "github.com/FerhatStl")
+                        }
+                        .padding(vertical = 4.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                // Email
+                Text(
+                    text = "ferhatsteel34@gmail.com",
+                    modifier = Modifier
+                        .clickable {
+                            openEmailClient(context, "ferhatsteel34@gmail.com")
+                        }
+                        .padding(vertical = 4.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
+
             }
         },
         confirmButton = {

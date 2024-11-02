@@ -18,7 +18,7 @@ object BottomNavigationItems {
         ),
         BottomNavItem(
             route = Screen.Home.route,
-            title = "Search",
+            title = "Search Book",
             iconResId = R.drawable.search_books
         ),
         BottomNavItem(

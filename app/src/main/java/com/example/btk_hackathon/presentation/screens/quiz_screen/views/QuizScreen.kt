@@ -30,9 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,9 +49,8 @@ fun QuizScreen(
 ) {
     val quizUiState by viewModel.quizUiState.observeAsState(QuizState())
 
-    Log.d("Quiz Screen Title", bookName)
-
     LaunchedEffect(bookName) {
+        Log.d("Quiz Screen Title", bookName)
         viewModel.fetchQuiz(
             bookName
         )
@@ -64,7 +60,7 @@ fun QuizScreen(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Quiz for $bookName") },
-                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.primary),
+                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.onPrimary),
                 navigationIcon = {
                     IconButton(onClick = { bookNavController.popBackStack() }) {
                         Icon(
@@ -97,7 +93,7 @@ fun QuizScreen(
                 quizUiState.quiz != null -> {
                     val questions = quizUiState.quiz!!.questions
                     if (questions.isNotEmpty()) {
-                        QuizQuestionList(questions)
+                        QuizQuestionList(viewModel, questions)
                     } else {
                         Text("No questions available", modifier = Modifier.align(Alignment.Center))
                     }
@@ -108,7 +104,7 @@ fun QuizScreen(
 }
 
 @Composable
-fun QuizQuestionList(questions: List<Question>) {
+fun QuizQuestionList(viewModel: QuizViewModel, questions: List<Question>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -116,14 +112,15 @@ fun QuizQuestionList(questions: List<Question>) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(questions.size) { question ->
-            QuizQuestionItem(questions[question])
+            QuizQuestionItem(questions[question], viewModel)
         }
     }
 }
 
 @Composable
-fun QuizQuestionItem(question: Question) {
-    var selectedAnswer by remember { mutableStateOf<String?>(null) }
+fun QuizQuestionItem(question: Question, viewModel: QuizViewModel) {
+    // Retrieve selected answer for the specific question
+    val selectedAnswer = viewModel.getSelectedAnswer(question.question)
     val isCorrect = selectedAnswer == question.correct_answer
 
     Column(
@@ -141,12 +138,14 @@ fun QuizQuestionItem(question: Question) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { selectedAnswer = answer }
+                    .clickable {
+                        viewModel.setSelectedAnswer(question.question, answer)  // Save selection
+                    }
                     .padding(vertical = 4.dp)
             ) {
                 RadioButton(
                     selected = selectedAnswer == answer,
-                    onClick = { selectedAnswer = answer }
+                    onClick = { viewModel.setSelectedAnswer(question.question, answer) }
                 )
                 Text(text = answer, modifier = Modifier.padding(start = 8.dp))
             }

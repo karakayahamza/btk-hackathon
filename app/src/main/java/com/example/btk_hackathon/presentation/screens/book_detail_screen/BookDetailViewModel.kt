@@ -1,5 +1,6 @@
 package com.example.btk_hackathon.presentation.screens.book_detail_screen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btk_hackathon.domain.use_cases.GetBookByIdUseCase
@@ -18,15 +19,18 @@ class BookDetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _bookDetailScreenState = MutableStateFlow<BookDetailScreenState>(
-        BookDetailScreenState.Loading)
-    val bookDetailScreenState: StateFlow<BookDetailScreenState> = _bookDetailScreenState.asStateFlow()
+        BookDetailScreenState.Loading
+    )
+    val bookDetailScreenState: StateFlow<BookDetailScreenState> =
+        _bookDetailScreenState.asStateFlow()
 
     fun fetchBookById(bookID: String) {
         viewModelScope.launch {
             getBookByIdUseCase(bookID)
                 .onStart { _bookDetailScreenState.value = BookDetailScreenState.Loading }
                 .catch { e ->
-                    _bookDetailScreenState.value = BookDetailScreenState.Error(e.message ?: "Unknown error")
+                    _bookDetailScreenState.value =
+                        BookDetailScreenState.Error(e.message ?: "Unknown error")
                 }
                 .collect { bookEntity ->
                     _bookDetailScreenState.value = if (bookEntity != null) {
@@ -36,5 +40,10 @@ class BookDetailViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("ViewModel", "BookDetailViewModel Death")
     }
 }

@@ -1,5 +1,6 @@
 package com.example.btk_hackathon.presentation.screens.search_book_screen
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -88,5 +89,10 @@ class SearchBookViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("ViewModel", "BookDetailViewModel")
     }
 }

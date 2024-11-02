@@ -118,7 +118,7 @@ dependencies {
     implementation (libs.material3)
 
     //Google Fonts
-    implementation("androidx.compose.ui:ui-text-google-fonts:1.7.3")
+    implementation(libs.androidx.ui.text.google.fonts)
 
     implementation (libs.compose.markdown)
 }

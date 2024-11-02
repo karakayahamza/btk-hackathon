@@ -61,7 +61,7 @@ class ChatViewModel @Inject constructor(
                                 text(quizData.text ?: "Yanıt boş")
                             }.build()
 
-                            Log.d("Response",quizData.text.toString())
+                            Log.d("Response", quizData.text.toString())
 
                             addMessage(responseContent)
                             setLoadingState(false)
@@ -88,5 +88,10 @@ class ChatViewModel @Inject constructor(
 
     private fun setLoadingState(loading: Boolean) {
         _isLoading.value = loading
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("ViewModel", "BookDetailViewModel")
     }
 }

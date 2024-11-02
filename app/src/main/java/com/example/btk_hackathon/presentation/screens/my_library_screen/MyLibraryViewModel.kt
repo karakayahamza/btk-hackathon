@@ -1,5 +1,6 @@
 package com.example.btk_hackathon.presentation.screens.my_library_screen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.btk_hackathon.data.local.model.BookEntity
@@ -28,11 +29,13 @@ class MyLibraryViewModel @Inject constructor(private val bookRepository: LocalBo
         viewModelScope.launch {
             bookRepository.getBooks()
                 .onStart { _myLibraryUiState.value = MyLibraryUiState.Loading }
-                .catch { e -> _myLibraryUiState.value =
-                    MyLibraryUiState.Error(e.message ?: "Unknown error")
+                .catch { e ->
+                    _myLibraryUiState.value =
+                        MyLibraryUiState.Error(e.message ?: "Unknown error")
                 }
-                .collect { data -> _myLibraryUiState.value =
-                    MyLibraryUiState.Success(data ?: emptyList())
+                .collect { data ->
+                    _myLibraryUiState.value =
+                        MyLibraryUiState.Success(data ?: emptyList())
                 }
         }
     }
@@ -42,5 +45,10 @@ class MyLibraryViewModel @Inject constructor(private val bookRepository: LocalBo
             bookRepository.delete(book)
             fetchBooks()
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("ViewModel", "BookDetailViewModel")
     }
 }

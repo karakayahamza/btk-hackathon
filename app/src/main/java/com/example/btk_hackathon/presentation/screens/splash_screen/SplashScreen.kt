@@ -2,7 +2,9 @@ package com.example.btk_hackathon.presentation.screens.splash_screen
 
 import android.content.Context
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,10 +21,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -31,16 +36,21 @@ import com.example.btk_hackathon.MainActivity
 import com.example.btk_hackathon.R
 import com.example.btk_hackathon.presentation.navigation.Screen
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreen(navController: NavHostController, context: MainActivity) {
     val alpha = remember { Animatable(0f) }
+    val scale = remember { Animatable(0.8f) }
 
     LaunchedEffect(key1 = true) {
-        alpha.animateTo(
-            1f,
-            animationSpec = tween(1000)
-        )
+        launch {
+            alpha.animateTo(1f, animationSpec = tween(1000))
+        }
+        launch {
+            scale.animateTo(1f, animationSpec = tween(1000, easing = FastOutSlowInEasing))
+        }
+
         delay(1000)
 
         if (onBoardingIsFinished(context = context)) {
@@ -54,8 +64,6 @@ fun SplashScreen(navController: NavHostController, context: MainActivity) {
                 popUpTo(Screen.SplashScreen.route) { inclusive = true }
             }
         }
-
-
     }
 
     Column(
@@ -65,10 +73,17 @@ fun SplashScreen(navController: NavHostController, context: MainActivity) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LoaderAnimation(
-            modifier = Modifier.size(400.dp), anim = R.raw.splash2
+        Image(
+            painter = rememberAsyncImagePainter(R.drawable.book_app_icon),
+            contentDescription = "App Icon",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .size(200.dp)
+                .scale(scale.value)
         )
+
         Spacer(modifier = Modifier.height(25.dp))
+
         Text(
             text = "BookNest",
             modifier = Modifier.alpha(alpha.value),
@@ -77,16 +92,6 @@ fun SplashScreen(navController: NavHostController, context: MainActivity) {
             color = MaterialTheme.colorScheme.secondary
         )
     }
-}
-
-@Composable
-fun LoaderAnimation(modifier: Modifier, anim: Int) {
-    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(anim))
-
-    LottieAnimation(
-        composition = composition, iterations = LottieConstants.IterateForever,
-        modifier = modifier
-    )
 }
 
 private fun onBoardingIsFinished(context: MainActivity): Boolean {
