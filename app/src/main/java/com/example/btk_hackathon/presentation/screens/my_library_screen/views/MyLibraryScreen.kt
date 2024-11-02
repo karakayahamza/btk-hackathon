@@ -269,7 +269,7 @@ fun BookInfo(bookEntity: BookEntity) {
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = stringResource(R.string.by, bookEntity.author),
+            text =  bookEntity.author,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.secondary
         )

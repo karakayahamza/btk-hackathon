@@ -22,8 +22,6 @@
     <string name="summary">Özet</string>
     <string name="type_here">Buraya yazın..</string>
     <string name="book_name">Kitap adı %1$s</string>
-    <string name="language_code_for_this_user">Bu kullanıcı için dil kodu:</string>
-    <string name="user">kullanıcı</string>
     <string name="send_message">Mesajı Gönder</string>
     <string name="ask_anything_you_want_about_books">Kitaplar hakkında istediğin her şeyi sor!</string>
     <string name="gemini_writes">Gemini yazıyor…</string>
@@ -31,7 +29,6 @@
     <string name="book_deleted">Kitap silindi</string>
     <string name="delete">Sil</string>
     <string name="my_library">Kütüphanem</string>
-    <string name="by">tarafından %1$s</string>
     <string name="settings">Ayarlar</string>
     <string name="language">Dil</string>
     <string name="choose_your_preferred_language">Tercih ettiğiniz dili seçin</string>

@@ -43,9 +43,6 @@ class ChatViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             chatUseCase.invoke(inputMessage, _chatHistory.value).collect { respond ->
-
-                Log.d("CHAT VİEW MODEL",respond.message.toString())
-
                 when (respond) {
                     is Resource.Loading -> {
                         withContext(Dispatchers.Main) {

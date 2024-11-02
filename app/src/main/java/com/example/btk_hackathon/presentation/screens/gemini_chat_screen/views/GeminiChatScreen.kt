@@ -24,6 +24,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,12 +34,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalTextToolbar
+import androidx.compose.ui.platform.TextToolbar
+import androidx.compose.ui.platform.TextToolbarStatus
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -58,12 +64,13 @@ fun GeminiChatScreen(
     viewModel: ChatViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    var newMessage by remember { mutableStateOf("") }
+
     val chatHistory by viewModel.chatHistory.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    var newMessage by remember { mutableStateOf(TextFieldValue("")) }
 
     LaunchedEffect(bookName) {
         val prompt = context.getString(
@@ -74,9 +81,9 @@ fun GeminiChatScreen(
             role = "user"
             text(prompt)
         }.build()
-        Log.d("CHAT VİEW MODEL",messageContent.toString())
         viewModel.sendMessageToChat(messageContent)
     }
+
 
     Scaffold(bottomBar = {
         Row(
@@ -85,41 +92,49 @@ fun GeminiChatScreen(
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedTextField(value = newMessage,
-                onValueChange = { newMessage = it },
-                label = { Text(stringResource(id = R.string.type_here)) },
-                textStyle = MaterialTheme.typography.bodyMedium,
-                visualTransformation = VisualTransformation.None,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp)
-                    .heightIn(min = 56.dp),
-                singleLine = false
-            )
 
-            IconButton(
-                onClick = {
-                    if (newMessage.isNotBlank()) {
-                        val messageContent = Content.Builder().apply {
-                            role = "user"
-                            text(newMessage)
-                        }.build()
-
-                        viewModel.sendMessageToChat(messageContent)
-                        newMessage = ""
-                        keyboardController?.hide()
-
-                        scope.launch {
-                            listState.animateScrollToItem(chatHistory.size)
-                        }
-                    }
-                }, enabled = newMessage.isNotBlank() && !isLoading
+            CompositionLocalProvider(
+                LocalTextToolbar provides EmptyTextToolbar
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Send,
-                    contentDescription = stringResource(R.string.send_message)
+                OutlinedTextField(
+                    value = newMessage,
+                    onValueChange = { newMessage = it },
+                    label = { Text(stringResource(id = R.string.type_here)) },
+                    textStyle = MaterialTheme.typography.bodyMedium,
+                    visualTransformation = VisualTransformation.None,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                        .heightIn(min = 56.dp),
+                    singleLine = false
                 )
+
+                IconButton(
+                    onClick = {
+                        if (newMessage.text.isNotBlank()) {
+                            val messageContent = Content.Builder().apply {
+                                role = "user"
+                                text(newMessage.text)
+                            }.build()
+
+                            viewModel.sendMessageToChat(messageContent)
+                            newMessage = TextFieldValue("")
+                            keyboardController?.hide()
+
+                            scope.launch {
+                                listState.animateScrollToItem(chatHistory.size)
+                            }
+                        }
+                    },
+                    enabled = newMessage.text.isNotBlank() && !isLoading
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Send,
+                        contentDescription = stringResource(R.string.send_message)
+                    )
+                }
             }
+
         }
     }) { paddingValues ->
         Box(
@@ -134,20 +149,17 @@ fun GeminiChatScreen(
                     modifier = Modifier.padding(bottom = 8.dp),
                     verticalArrangement = Arrangement.Bottom
                 ) {
-
                     items(chatHistory.size) { message ->
                         if (message != 0) {
                             MessageItem(chatHistory[message])
                         }
                     }
 
-
                     if (isLoading) {
                         item {
                             LoadingIndicator()
                         }
                     }
-
                 }
             } else {
                 Box(
@@ -159,12 +171,34 @@ fun GeminiChatScreen(
             }
         }
     }
+
+
 }
 
+object EmptyTextToolbar : TextToolbar {
+    override val status: TextToolbarStatus = TextToolbarStatus.Hidden
+
+    override fun hide() {}
+
+    override fun showMenu(
+        rect: Rect,
+        onCopyRequested: (() -> Unit)?,
+        onPasteRequested: (() -> Unit)?,
+        onCutRequested: (() -> Unit)?,
+        onSelectAllRequested: (() -> Unit)?,
+    ) {
+        // Implement "Select All" action
+        onSelectAllRequested?.invoke()
+    }
+}
 
 @Composable
 fun LoadingIndicator() {
-    Text(text = stringResource(R.string.gemini_writes), color = Color.Gray, modifier = Modifier.padding(8.dp))
+    Text(
+        text = stringResource(R.string.gemini_writes),
+        color = Color.Gray,
+        modifier = Modifier.padding(8.dp)
+    )
 }
 
 @Composable
