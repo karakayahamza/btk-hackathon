@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -91,9 +92,9 @@ fun ProfileScreen() {
             onClick = { showToast(context, "Hamza Karakaya & Ferhat Çelik") }
         )
 
-        // Contact Support
+        // Contact Us
         SettingItem(
-            title = "Contact Support",
+            title = "Contact Us",
             subtitle = "Get in touch with us",
             icon = Icons.Filled.Call,
             onClick = { showContactSupportDialog = true }
@@ -202,7 +203,7 @@ fun ContactSupportDialog(onDismiss: () -> Unit) {
                     text = "Github",
                     modifier = Modifier
                         .clickable {
-                            openLink(context, "github.com/FerhatStl")
+                            openLink(context, "https://github.com/FerhatStl")
                         }
                         .padding(vertical = 4.dp),
                     color = MaterialTheme.colorScheme.primary
@@ -253,13 +254,14 @@ fun PrivacyPolicyDialog(onDismiss: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(scrollState)
-                    .padding(16.dp),
+                    .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "This is a trial application and utilizes Gemini AI. Therefore, the information you provide will be processed by Gemini AI.",
+                    text = "    This application use Google's Gemini API to provide artificial intelligence capabilities. We don't hold or process your data. Google's Terms of Service is applied in AI features. You are bound to Gemini API terms of service. Please refrain from using important information in chat feature.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign =TextAlign.Justify
                 )
             }
         },

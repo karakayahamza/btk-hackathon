@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -189,7 +190,8 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                             color = MaterialTheme.colorScheme.onBackground,
                             fontWeight = FontWeight.Bold
                         ),
-                        modifier = Modifier.padding(8.dp)
+                        modifier = Modifier.padding(8.dp),
+                        textAlign = TextAlign.Center
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -278,9 +280,10 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Text(
-                        text = book.summary,
+                        text = "    " + book.summary,
                         style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Justify
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
