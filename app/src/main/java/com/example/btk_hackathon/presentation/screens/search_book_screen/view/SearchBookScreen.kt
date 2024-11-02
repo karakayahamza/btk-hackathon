@@ -1,5 +1,7 @@
 package com.example.btk_hackathon.presentation.screens.search_book_screen.view
 
+import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,54 +65,23 @@ import com.example.btk_hackathon.presentation.screens.search_book_screen.SearchB
 fun SearchBookScreen() {
     val context = LocalContext.current
     val viewModel: SearchBookViewModel = hiltViewModel()
-    val state by viewModel.state.observeAsState(initial = SearchBookState())
+    val state by viewModel.state.observeAsState(SearchBookState())
     var searchQuery by remember { mutableStateOf("") }
-    val saveState by viewModel.saveState.observeAsState(initial = SaveState.Idle)
+    val saveState by viewModel.saveState.observeAsState(SaveState.Idle)
 
-    LaunchedEffect(state.error) {
-        state.error?.takeIf { it.isNotBlank() }?.let { errorMessage ->
-            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
-        }
-    }
-
-    LaunchedEffect(saveState) {
-        when (saveState) {
-            is SaveState.Loading -> {
-                Toast.makeText(
-                    context,
-                    "The book is being added to the library...",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            is SaveState.Success -> {
-                Toast.makeText(
-                    context,
-                    (saveState as SaveState.Success).message,
-                    Toast.LENGTH_SHORT
-                ).show()
-                viewModel.resetSaveState()
-            }
-
-            is SaveState.Error -> {
-                Toast.makeText(context, (saveState as SaveState.Error).message, Toast.LENGTH_SHORT)
-                    .show()
-                viewModel.resetSaveState()
-            }
-
-            SaveState.Idle -> Unit
-        }
-    }
+    DisplayToastMessage(context = context, saveState = saveState, viewModel = viewModel)
 
     Scaffold { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-        )
-        {
-            Column(modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp)) {
-                SearchInputField(searchQuery, onSearchQueryChange = { searchQuery = it }) {
+        ) {
+            Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)) {
+                SearchInputField(
+                    searchQuery = searchQuery,
+                    onSearchQueryChange = { searchQuery = it }
+                ) {
                     viewModel.getOpenLibraryBook(query = searchQuery)
                 }
                 Column(
@@ -118,23 +90,30 @@ fun SearchBookScreen() {
                     verticalArrangement = Arrangement.Center
                 ) {
                     when {
-                        state.isLoading -> {
-                            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                        }
-
-                        searchQuery.isEmpty() && state.books.isNullOrEmpty() -> {
-                            EmptySearchMessage()
-                        }
-
-                        else -> {
-                            DisplayBooks(state.books, viewModel)
-                        }
+                        state.isLoading -> CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
+                        searchQuery.isEmpty() && state.books.isNullOrEmpty() -> EmptySearchMessage()
+                        else -> DisplayBooks(state.books, viewModel)
                     }
-
-                    state.error?.let {
-                        ErrorMessage(it)
-                    }
+                    state.error?.let { ErrorMessage(it) }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun DisplayToastMessage(context: Context, saveState: SaveState, viewModel: SearchBookViewModel) {
+    LaunchedEffect(saveState) {
+        val message = when (saveState) {
+            is SaveState.Loading -> "The book is being added to the library..."
+            is SaveState.Success -> saveState.message
+            is SaveState.Error -> saveState.message
+            SaveState.Idle -> null
+        }
+        message?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            if (saveState !is SaveState.Loading) {
+                viewModel.resetSaveState()
             }
         }
     }
@@ -225,13 +204,13 @@ fun ErrorMessage(message: String) {
 
 @Composable
 fun BookInformationCard(viewModel: SearchBookViewModel, book: BookDto) {
-    var showDialog by remember { mutableStateOf(false) }
+    var showDialog by rememberSaveable { mutableStateOf(false) }
     val imagePainter = rememberAsyncImagePainter(
         ImageRequest.Builder(LocalContext.current)
             .data(book.coverEditionKey)
             .apply {
                 crossfade(true)
-                error(R.drawable.ic_launcher_background)
+                error(R.drawable.broken_image)
             }
             .build()
     )
