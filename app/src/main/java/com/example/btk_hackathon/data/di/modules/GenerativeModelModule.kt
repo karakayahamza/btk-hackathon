@@ -12,6 +12,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import java.util.Locale
+
+fun getUserLanguage(): String {
+    return Locale.getDefault().language
+}
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -111,12 +116,13 @@ object GenerativeModelModule {
             },
             systemInstruction = content {
                 text(
-                    "You will be given the name of a book." +
-                    " Please take this book title and answer the questions you are given. " +
-                    "But only answer the questions about the book." +
-                    "If you are asked a question about something other than the book, write “Sorry, I can only talk about books”." +
-                    " You can use MarkDown to post your answers better."+
-                    "Just send a text."
+                    """
+                        You will be given the name of a book and language of the user.
+                        You have to take and answer questions of the user regarding this book.
+                        If user input doesn't relate to book write a simple refusal that states you can’t talk about matters other than asked book.
+                    """.trimIndent()+
+                    "User's language code for this instance:" + getUserLanguage() +
+                    "Please start conversation in this language."
                 )
             }
         )
