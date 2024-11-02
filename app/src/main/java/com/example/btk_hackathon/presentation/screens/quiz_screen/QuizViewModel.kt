@@ -1,0 +1,46 @@
+package com.example.btk_hackathon.presentation.screens.quiz_screen
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.btk_hackathon.Util.Resource
+import com.example.btk_hackathon.domain.use_cases.GetGeminiBookQuestions
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class QuizViewModel @Inject constructor(
+    private val getGeminiQuizUseCase: GetGeminiBookQuestions
+) : ViewModel() {
+    private val _quizUiState = MutableLiveData<QuizState>().apply { value = QuizState() }
+    val quizUiState: LiveData<QuizState> get() = _quizUiState
+
+
+    fun fetchQuiz(bookName: String) {
+        _quizUiState.value = QuizState(isLoading = true)
+
+        viewModelScope.launch {
+            getGeminiQuizUseCase.invoke(bookName).collect { resource ->
+                when (resource) {
+                    is Resource.Loading -> _quizUiState.value = QuizState(isLoading = true)
+
+                    is Resource.Success -> resource.data?.let { quizData ->
+                        _quizUiState.value = QuizState(quiz = quizData)
+                    } ?: run {
+                        _quizUiState.value =
+                            QuizState(error = "No quiz data available", isLoading = false)
+                    }
+
+                    is Resource.Error -> {
+                        _quizUiState.value = QuizState(
+                            error = resource.message ?: "Failed to fetch book details",
+                            isLoading = false
+                        )
+                    }
+                }
+            }
+        }
+    }
+}

@@ -7,15 +7,15 @@ import androidx.navigation.compose.composable
 import com.example.btk_hackathon.MainActivity
 import com.example.btk_hackathon.MainScreen
 import com.example.btk_hackathon.data.local.model.BookEntity
-import com.example.btk_hackathon.presentation.book_detail_screen.views.BookDetailScreen
-import com.example.btk_hackathon.presentation.book_detail_screen.views.BookInfoScreen
-import com.example.btk_hackathon.presentation.gemini_chat_screen.GeminiChatScreen
-import com.example.btk_hackathon.presentation.my_library.views.MyLibraryScreen
-import com.example.btk_hackathon.presentation.profile_screen.ProfileScreen
-import com.example.btk_hackathon.presentation.quiz_screen.views.QuizScreen
-import com.example.btk_hackathon.presentation.search_book.view.SearchBookScreen
-import com.example.btk_hackathon.presentation.splash_screen.SplashScreen
-import com.example.btk_hackathon.presentation.welcome_screen.OnboardingScreen
+import com.example.btk_hackathon.presentation.screens.book_detail_screen.views.BookDetailScreen
+import com.example.btk_hackathon.presentation.screens.book_detail_screen.views.BookInfoScreen
+import com.example.btk_hackathon.presentation.screens.gemini_chat_screen.views.GeminiChatScreen
+import com.example.btk_hackathon.presentation.screens.my_library_screen.views.MyLibraryScreen
+import com.example.btk_hackathon.presentation.screens.profile_screen.ProfileScreen
+import com.example.btk_hackathon.presentation.screens.quiz_screen.views.QuizScreen
+import com.example.btk_hackathon.presentation.screens.search_book_screen.view.SearchBookScreen
+import com.example.btk_hackathon.presentation.screens.splash_screen.SplashScreen
+import com.example.btk_hackathon.presentation.screens.welcome_screen.OnboardingScreen
 
 
 @Composable
@@ -71,7 +71,7 @@ fun BookDetailNavHost(bookNavController: NavHostController, book: BookEntity) {
 
         composable(Screen.GeminiChatScreen.route) { backStackEntry ->
             val bookName = backStackEntry.arguments?.getString("book_name")
-            GeminiChatScreen(bookNavController,bookName ?: "defaultName")
+            GeminiChatScreen(bookNavController, bookName ?: "defaultName")
         }
     }
 }
