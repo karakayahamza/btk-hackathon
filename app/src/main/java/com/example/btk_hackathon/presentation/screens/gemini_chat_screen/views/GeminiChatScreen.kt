@@ -1,5 +1,6 @@
 package com.example.btk_hackathon.presentation.screens.gemini_chat_screen.views
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,11 +37,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.btk_hackathon.R
 import com.example.btk_hackathon.presentation.screens.gemini_chat_screen.ChatViewModel
 import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.TextPart
@@ -58,6 +61,7 @@ fun GeminiChatScreen(
     bookName: String,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     var newMessage by remember { mutableStateOf("") }
     val chatHistory by viewModel.chatHistory.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -66,10 +70,15 @@ fun GeminiChatScreen(
     val listState = rememberLazyListState()
 
     LaunchedEffect(bookName) {
+        val prompt = context.getString(
+            R.string.book_name, bookName
+        )
+
         val messageContent = Content.Builder().apply {
             role = "user"
-            text("Book name: $bookName" + "Language code for this user:" + getUserLanguage())
+            text(prompt)
         }.build()
+        Log.d("CHAT VİEW MODEL",messageContent.toString())
         viewModel.sendMessageToChat(messageContent)
     }
 
@@ -81,10 +90,9 @@ fun GeminiChatScreen(
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedTextField(
-                value = newMessage,
+            OutlinedTextField(value = newMessage,
                 onValueChange = { newMessage = it },
-                label = { Text("Type here..") },
+                label = { Text(stringResource(id = R.string.type_here)) },
                 textStyle = MaterialTheme.typography.bodyMedium,
                 visualTransformation = VisualTransformation.None,
                 modifier = Modifier
@@ -98,7 +106,7 @@ fun GeminiChatScreen(
                 onClick = {
                     if (newMessage.isNotBlank()) {
                         val messageContent = Content.Builder().apply {
-                            role = "user"
+                            role = context.getString(R.string.user)
                             text(newMessage)
                         }.build()
 
@@ -110,12 +118,11 @@ fun GeminiChatScreen(
                             listState.animateScrollToItem(chatHistory.size)
                         }
                     }
-                },
-                enabled = newMessage.isNotBlank() && !isLoading
+                }, enabled = newMessage.isNotBlank() && !isLoading
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Send,
-                    contentDescription = "Send message"
+                    contentDescription = stringResource(R.string.send_message)
                 )
             }
         }
@@ -129,8 +136,7 @@ fun GeminiChatScreen(
             if (chatHistory.isNotEmpty()) {
                 LazyColumn(
                     state = listState,
-                    modifier = Modifier
-                        .padding(bottom = 8.dp),
+                    modifier = Modifier.padding(bottom = 8.dp),
                     verticalArrangement = Arrangement.Bottom
                 ) {
 
@@ -153,7 +159,7 @@ fun GeminiChatScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(text = "Ask anything you want about books!")
+                    Text(text = stringResource(R.string.ask_anything_you_want_about_books))
                 }
             }
         }
@@ -163,20 +169,20 @@ fun GeminiChatScreen(
 
 @Composable
 fun LoadingIndicator() {
-    Text(text = "Gemini writes...", color = Color.Gray, modifier = Modifier.padding(8.dp))
+    Text(text = stringResource(R.string.gemini_writes), color = Color.Gray, modifier = Modifier.padding(8.dp))
 }
 
 @Composable
 fun MessageItem(message: Content) {
     val isUserMessage = message.role == "user"
 
-    val backgroundColor = if (isUserMessage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
-    val textColor = if (isUserMessage) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
+    val backgroundColor =
+        if (isUserMessage) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+    val textColor =
+        if (isUserMessage) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
     val alignment = if (isUserMessage) Arrangement.End else Arrangement.Start
-    val paddingModifier = if (isUserMessage)
-        Modifier.padding(start = 16.dp, end = 8.dp)
-    else
-        Modifier.padding(end = 16.dp, start = 8.dp)
+    val paddingModifier = if (isUserMessage) Modifier.padding(start = 16.dp, end = 8.dp)
+    else Modifier.padding(end = 16.dp, start = 8.dp)
 
     val messageText = message.getText()
 
@@ -197,25 +203,25 @@ fun MessageItem(message: Content) {
 
 @Composable
 fun MessageBubble(
-    text: String?,
-    backgroundColor: Color,
-    textColor: Color,
-    isUserMessage: Boolean
+    text: String?, backgroundColor: Color, textColor: Color, isUserMessage: Boolean
 ) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
 
-    Box(
-        modifier = Modifier
-            .background(color = backgroundColor, shape = RoundedCornerShape(8.dp))
-            .clickable {
-                text?.let {
-                    clipboardManager.setText(AnnotatedString(it))
-                    Toast.makeText(context, "Text copied to clipboard", Toast.LENGTH_SHORT).show()
-                }
+    Box(modifier = Modifier
+        .background(color = backgroundColor, shape = RoundedCornerShape(8.dp))
+        .clickable {
+            text?.let {
+                clipboardManager.setText(AnnotatedString(it))
+                Toast
+                    .makeText(
+                        context,
+                        context.getString(R.string.text_copied_to_clipboard), Toast.LENGTH_SHORT
+                    )
+                    .show()
             }
-            .padding(8.dp)
-    ) {
+        }
+        .padding(8.dp)) {
         Column {
             if (!text.isNullOrEmpty()) {
                 if (isUserMessage) {

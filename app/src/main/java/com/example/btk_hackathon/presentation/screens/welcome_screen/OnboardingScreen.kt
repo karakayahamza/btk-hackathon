@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -49,16 +50,16 @@ fun OnboardingScreen(navController: NavHostController, context: MainActivity) {
     val animations =
         listOf(R.raw.woman_reading_book_under_the_tree, R.raw.online_food_order, R.raw.lotti_anim)
     val titles = listOf(
-        "Welcome to the world of books!",
-        "Quick Access to Book Abstracts",
-        "Ask Anything You've Ever Wondered",
-        "Discover New Books"
+        stringResource(R.string.welcome_to_the_world_of_books),
+        stringResource(R.string.quick_access_to_book_abstracts),
+        stringResource(R.string.ask_anything_you_ve_ever_wondered),
+        stringResource(R.string.discover_new_books),
     )
     val descriptions = listOf(
-        "With this app, you can access book summaries, ask questions about books and get personalized recommendations.",
-        "Easily access the summaries of the books you are curious about and read them without wasting time. Get quick information about books.",
-        "Do you have questions about books? Ask anything you want about books, authors, content and more and get instant answers with Gemini AI support in the app.",
-        "Get personalized book recommendations based on your interests. Meet new books and expand your reading list."
+        stringResource(R.string.with_this_app_you_can_access_book_summaries_ask_questions_about_books_and_get_personalized_recommendations),
+        stringResource(R.string.easily_access_the_summaries_of_the_books_you_are_curious_about_and_read_them_without_wasting_time_get_quick_information_about_books),
+        stringResource(R.string.do_you_have_questions_about_books_ask_anything_you_want_about_books_authors_content_and_more_and_get_instant_answers_with_gemini_ai_support_in_the_app),
+        stringResource(R.string.get_personalized_book_recommendations_based_on_your_interests_meet_new_books_and_expand_your_reading_list)
     )
     val pagerState = rememberPagerState(pageCount = { animations.size })
 
@@ -150,7 +151,7 @@ fun ButtonsSection(
                             }
                         }
                     ) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = "Back",
@@ -170,12 +171,12 @@ fun ButtonsSection(
                     }
                 ) {
                     Text(
-                        text = "Next",
+                        text = stringResource(R.string.next),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Icon(Icons.Default.ArrowForward, contentDescription = "Next")
+                    Icon(Icons.Default.ArrowForward, contentDescription = stringResource(R.string.next))
                 }
             }
 
@@ -195,7 +196,7 @@ fun ButtonsSection(
                     .padding(horizontal = 16.dp)
             ) {
                 Text(
-                    text = "Let's get started",
+                    text = stringResource(R.string.let_s_get_started),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                 )

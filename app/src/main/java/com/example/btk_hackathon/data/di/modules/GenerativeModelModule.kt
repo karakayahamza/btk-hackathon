@@ -1,5 +1,6 @@
 package com.example.btk_hackathon.data.di.modules
 
+import android.content.Context
 import com.example.btk_hackathon.BuildConfig
 import com.example.btk_hackathon.data.di.qualifiers.BookDetailGenerativeModel
 import com.example.btk_hackathon.data.di.qualifiers.BookQuizGenerativeModel
@@ -10,14 +11,15 @@ import com.google.ai.client.generativeai.type.generationConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import java.util.Locale
 
-fun getUserLanguage(): String {
-    return Locale.getDefault().language
+fun getUserLanguage(context: Context): String {
+    val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    return sharedPreferences.getString("language_code", "en") ?: "en"
 }
-
 @Module
 @InstallIn(SingletonComponent::class)
 object GenerativeModelModule {
@@ -39,7 +41,7 @@ object GenerativeModelModule {
                 text(
                     """
                     You will be given the name of a book. Return me the following details of this book in JSON format with the specified key names:
-
+                    - Write everything in the language in which the book is given to you.
                     - A long and detailed summary (“summary”)
                     - Author of the book (“author”)
                     - Short biography of the author (“author_biography”)
@@ -103,7 +105,7 @@ object GenerativeModelModule {
     @ChatGenerativeModel
     @Provides
     @Singleton
-    fun provideChatGenerativeModel(): GenerativeModel {
+    fun provideChatGenerativeModel(@ApplicationContext context: Context): GenerativeModel {
         return GenerativeModel(
             modelName = "gemini-1.5-flash",
             apiKey = BuildConfig.API_KEY,
@@ -121,7 +123,7 @@ object GenerativeModelModule {
                         You have to take and answer questions of the user regarding this book.
                         If user input doesn't relate to book write a simple refusal that states you can’t talk about matters other than asked book.
                     """.trimIndent()+
-                    "User's language code for this instance:" + getUserLanguage() +
+                    "User's language code for this instance:" + getUserLanguage(context) +
                     "Please start conversation in this language."
                 )
             }

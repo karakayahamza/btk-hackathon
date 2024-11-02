@@ -23,6 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val languageCode = loadLanguagePreference(this)
+        setLocale(this, languageCode)
         setContent {
             BtkhackathonTheme {
                 val navController = rememberNavController()

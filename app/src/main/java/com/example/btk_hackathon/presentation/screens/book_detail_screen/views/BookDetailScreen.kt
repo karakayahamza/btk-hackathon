@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.btk_hackathon.R
 import com.example.btk_hackathon.data.local.model.BookEntity
 import com.example.btk_hackathon.presentation.navigation.BookDetailNavHost
 import com.example.btk_hackathon.presentation.navigation.Screen
@@ -89,7 +91,7 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
         ) {
             Image(
                 painter = rememberAsyncImagePainter(book.cover_edition_key),
-                contentDescription = "Book Cover",
+                contentDescription = stringResource(R.string.book_cover),
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.fillMaxSize()
             )
@@ -124,7 +126,7 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                 ) {
                     Image(
                         painter = rememberAsyncImagePainter(book.cover_edition_key),
-                        contentDescription = "Book Cover",
+                        contentDescription = stringResource(R.string.book_cover),
                         contentScale = ContentScale.Inside,
                         modifier = Modifier
                             .padding(16.dp)
@@ -154,7 +156,10 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                             bookNavController.navigate(Screen.QuizScreen.createRoute(book.title))
                         }
                     ) {
-                        Text(text = "Quiz", color = MaterialTheme.colorScheme.onBackground)
+                        Text(
+                            text = stringResource(R.string.quiz),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
                     }
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -174,7 +179,10 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                             )
                         }
                     ) {
-                        Text(text = "Ask Gemini", color = MaterialTheme.colorScheme.onBackground)
+                        Text(
+                            text = stringResource(R.string.ask_gemini),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
                     }
                 }
             }
@@ -205,7 +213,7 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Text(
-                        text = "Author: ${book.author}",
+                        text = stringResource(R.string.author, book.author),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = MaterialTheme.colorScheme.onBackground,
                             fontWeight = FontWeight.SemiBold
@@ -224,7 +232,7 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Text(
-                        text = "Genre: ${book.genre}",
+                        text = stringResource(R.string.genre, book.genre),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = MaterialTheme.colorScheme.onBackground,
                             fontWeight = FontWeight.SemiBold
@@ -243,7 +251,7 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Text(
-                        text = "Published on: ${book.publicationDate}",
+                        text = stringResource(R.string.published_on, book.publicationDate),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = MaterialTheme.colorScheme.onBackground,
                             fontWeight = FontWeight.SemiBold
@@ -261,7 +269,7 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Text(
-                        text = "Summary",
+                        text = stringResource(R.string.summary),
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = MaterialTheme.colorScheme.onBackground,
                             fontWeight = FontWeight.Bold
@@ -280,7 +288,7 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Text(
-                        text = "    " + book.summary,
+                        text = book.summary,
                         style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
                         modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Justify
@@ -300,7 +308,7 @@ fun BookInfoScreen(bookNavController: NavHostController, book: BookEntity) {
                         elevation = CardDefaults.cardElevation(4.dp)
                     ) {
                         Text(
-                            text = "Main Characters",
+                            text = stringResource(R.string.main_characters),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 color = MaterialTheme.colorScheme.onBackground,
                                 fontWeight = FontWeight.Bold

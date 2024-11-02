@@ -1,7 +1,6 @@
 package com.example.btk_hackathon.presentation.screens.search_book_screen.view
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -47,6 +46,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -105,7 +105,7 @@ fun SearchBookScreen() {
 fun DisplayToastMessage(context: Context, saveState: SaveState, viewModel: SearchBookViewModel) {
     LaunchedEffect(saveState) {
         val message = when (saveState) {
-            is SaveState.Loading -> "The book is being added to the library..."
+            is SaveState.Loading -> context.getString(R.string.the_book_is_being_added_to_the_library)
             is SaveState.Success -> saveState.message
             is SaveState.Error -> saveState.message
             SaveState.Idle -> null
@@ -130,7 +130,7 @@ fun SearchInputField(
     TextField(
         value = searchQuery,
         onValueChange = onSearchQueryChange,
-        label = { Text("Search book...") },
+        label = { Text(stringResource(R.string.search_book)) },
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
@@ -142,7 +142,7 @@ fun SearchInputField(
             }) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Search",
+                    contentDescription = stringResource(R.string.search),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
@@ -155,16 +155,16 @@ fun EmptySearchMessage() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
             painter = painterResource(id = R.drawable.stack_of_books),
-            contentDescription = "No books found",
+            contentDescription = stringResource(R.string.no_books_found),
             modifier = Modifier.size(48.dp),
         )
         Text(
-            text = "Books are Waiting for You!",
+            text = stringResource(R.string.books_are_waiting_for_you),
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(top = 8.dp)
         )
         Text(
-            text = "Build your library, explore book summaries, engage in discussions, and tackle quizzes!",
+            text = stringResource(R.string.build_your_library_explore_book_summaries_engage_in_discussions_and_tackle_quizzes),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
@@ -174,10 +174,10 @@ fun EmptySearchMessage() {
 
 
 @Composable
-fun DisplayBooks(books: List<BookDto>?, viewModel: SearchBookViewModel) {
+fun DisplayBooks(books: List<BookDto>?, viewModel: SearchBookViewModel) =
     if (books.isNullOrEmpty()) {
         Text(
-            text = "No books were found.",
+            text = stringResource(R.string.no_books_were_found),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(16.dp)
         )
@@ -188,7 +188,6 @@ fun DisplayBooks(books: List<BookDto>?, viewModel: SearchBookViewModel) {
             }
         }
     }
-}
 
 @Composable
 fun ErrorMessage(message: String) {
@@ -223,7 +222,7 @@ fun BookInformationCard(viewModel: SearchBookViewModel, book: BookDto) {
         shape = MaterialTheme.shapes.medium
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            BookImage(imagePainter, showDialog) { showDialog = true }
+            BookImage(imagePainter) { showDialog = true }
             Spacer(modifier = Modifier.padding(top = 8.dp))
             Text(
                 text = book.title.uppercase(),
@@ -232,12 +231,15 @@ fun BookInformationCard(viewModel: SearchBookViewModel, book: BookDto) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Authors: ${book.authorName.joinToString(", ")}",
+                text = stringResource(R.string.authors, book.authorName.joinToString(", ")),
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Main Characters: ${book.person.take(10).joinToString(", ")}",
+                text = stringResource(
+                    R.string.main_characters,
+                    book.person.take(10).joinToString(", ")
+                ),
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -251,7 +253,7 @@ fun BookInformationCard(viewModel: SearchBookViewModel, book: BookDto) {
 }
 
 @Composable
-fun BookImage(imagePainter: AsyncImagePainter, showDialog: Boolean, onClick: () -> Unit) {
+fun BookImage(imagePainter: AsyncImagePainter, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -268,7 +270,7 @@ fun BookImage(imagePainter: AsyncImagePainter, showDialog: Boolean, onClick: () 
         }
         Image(
             painter = imagePainter,
-            contentDescription = "Book Image",
+            contentDescription = stringResource(R.string.book_image),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
@@ -289,7 +291,7 @@ fun SaveButton(viewModel: SearchBookViewModel, book: BookDto) {
         },
         enabled = viewModel.saveState.value == SaveState.Idle
     ) {
-        Text("Save to My Library")
+        Text(stringResource(R.string.save_to_my_library))
     }
 }
 
@@ -306,7 +308,7 @@ fun FullScreenDialog(onDismiss: () -> Unit, book: BookDto) {
 
             Image(
                 painter = rememberAsyncImagePainter(model = book.coverEditionKey ?: ""),
-                contentDescription = "Book Cover",
+                contentDescription = stringResource(R.string.book_cover),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(imageHeight)
@@ -328,7 +330,7 @@ fun FullScreenDialog(onDismiss: () -> Unit, book: BookDto) {
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Close",
+                    contentDescription = stringResource(R.string.close),
                     tint = Color.White
                 )
             }

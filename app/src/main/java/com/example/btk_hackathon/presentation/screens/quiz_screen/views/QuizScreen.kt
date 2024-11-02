@@ -33,9 +33,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.btk_hackathon.R
 import com.example.btk_hackathon.data.remote.dto.Question
 import com.example.btk_hackathon.presentation.screens.quiz_screen.QuizState
 import com.example.btk_hackathon.presentation.screens.quiz_screen.QuizViewModel
@@ -59,13 +61,13 @@ fun QuizScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Quiz for $bookName") },
+                title = { Text(text = stringResource(R.string.quiz_for, bookName)) },
                 colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.onPrimary),
                 navigationIcon = {
                     IconButton(onClick = { bookNavController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 }
@@ -95,7 +97,7 @@ fun QuizScreen(
                     if (questions.isNotEmpty()) {
                         QuizQuestionList(viewModel, questions)
                     } else {
-                        Text("No questions available", modifier = Modifier.align(Alignment.Center))
+                        Text(stringResource(R.string.no_questions_available), modifier = Modifier.align(Alignment.Center))
                     }
                 }
             }
@@ -119,7 +121,6 @@ fun QuizQuestionList(viewModel: QuizViewModel, questions: List<Question>) {
 
 @Composable
 fun QuizQuestionItem(question: Question, viewModel: QuizViewModel) {
-    // Retrieve selected answer for the specific question
     val selectedAnswer = viewModel.getSelectedAnswer(question.question)
     val isCorrect = selectedAnswer == question.correct_answer
 
@@ -156,13 +157,16 @@ fun QuizQuestionItem(question: Question, viewModel: QuizViewModel) {
         if (selectedAnswer != null) {
             if (isCorrect) {
                 Text(
-                    text = "Correct! 🎉",
+                    text = stringResource(R.string.correct),
                     color = Color.Green,
                     style = MaterialTheme.typography.bodyMedium
                 )
             } else {
                 Text(
-                    text = "Incorrect. The correct answer is: ${question.correct_answer}",
+                    text = stringResource(
+                        R.string.incorrect_the_correct_answer_is,
+                        question.correct_answer
+                    ),
                     color = Color.Red,
                     style = MaterialTheme.typography.bodyMedium
                 )

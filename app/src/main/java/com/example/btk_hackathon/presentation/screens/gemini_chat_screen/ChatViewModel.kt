@@ -34,7 +34,7 @@ class ChatViewModel @Inject constructor(
     val responseState: LiveData<ChatState> get() = _responseState
 
 
-    fun addMessage(content: Content) {
+    private fun addMessage(content: Content) {
         val updatedMessages = _chatHistory.value + content
         _chatHistory.value = updatedMessages
     }
@@ -45,6 +45,9 @@ class ChatViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             chatUseCase.invoke(inputMessage, _chatHistory.value).collect { respond ->
+
+                Log.d("CHAT VİEW MODEL",respond.message.toString())
+
                 when (respond) {
                     is Resource.Loading -> {
                         withContext(Dispatchers.Main) {

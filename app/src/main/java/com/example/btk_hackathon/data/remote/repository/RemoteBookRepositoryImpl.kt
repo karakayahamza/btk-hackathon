@@ -52,7 +52,7 @@ class RemoteBookRepositoryImpl @Inject constructor(
     ): GenerateContentResponse {
         val chat = chatGenerativeModel.startChat(chatHistory)
         val response = chat.sendMessage(prompt)
-        Log.d("Response",response.text.toString())
+        Log.d("Response23232",response.text.toString())
         return response
     }
 }

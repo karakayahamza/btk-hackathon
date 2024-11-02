@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -125,7 +126,8 @@ fun SwipeToDismissBookCard(
 
                 SwipeToDismissBoxValue.EndToStart -> {
                     viewModel.deleteBook(bookEntity)
-                    Toast.makeText(context, "Book deleted", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.book_deleted), Toast.LENGTH_SHORT).show()
                     true
                 }
 
@@ -166,7 +168,7 @@ fun DismissBackground(dismissState: SwipeToDismissBoxState) {
         if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
             Icon(
                 Icons.Default.Delete,
-                contentDescription = "Delete",
+                contentDescription = stringResource(R.string.delete),
                 tint = Color.White,
                 modifier = Modifier.padding(end = 16.dp)
             )
@@ -190,7 +192,7 @@ fun LibraryHeader() {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "My Library",
+            text = stringResource(R.string.my_library),
             style = MaterialTheme.typography.headlineMedium
         )
     }
@@ -267,7 +269,7 @@ fun BookInfo(bookEntity: BookEntity) {
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = "by ${bookEntity.author}",
+            text = stringResource(R.string.by, bookEntity.author),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.secondary
         )

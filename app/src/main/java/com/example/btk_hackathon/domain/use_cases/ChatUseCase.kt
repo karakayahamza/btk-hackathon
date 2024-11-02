@@ -27,7 +27,6 @@ class ChatUseCase @Inject constructor(
                         bookName,
                         chatHistory
                     )
-
                 Log.d("Response",response.text.toString())
                 emit(Resource.Success(response))
             } catch (e: Exception) {

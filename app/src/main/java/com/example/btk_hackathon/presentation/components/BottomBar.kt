@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -28,12 +29,12 @@ fun BottomBar(navController: NavHostController) {
                 icon = {
                     Icon(
                         painter = painterResource(id = item.iconResId),
-                        contentDescription = item.title,
+                        contentDescription = stringResource(id = item.title),
                         tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(30.dp)
                     )
                 },
-                label = { Text(item.title) },
+                label = { Text(stringResource(id = item.title)) },
                 selected = isSelected,
                 onClick = {
                     if (!isSelected) {
