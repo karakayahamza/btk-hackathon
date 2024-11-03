@@ -1,5 +1,6 @@
 package com.example.btk_hackathon.domain.use_cases
 
+import android.util.Log
 import com.example.btk_hackathon.Util.Resource
 import com.example.btk_hackathon.data.remote.dto.GeminiBookModel
 import com.example.btk_hackathon.domain.repository.RemoteBookRepository
@@ -21,6 +22,7 @@ class GetGeminiBookDetailUseCase @Inject constructor(
                         bookName,
                         emptyList()
                     )
+                Log.d("FERO",response.toString())
                 emit(Resource.Success(response))
             } catch (e: Exception) {
                 emit(Resource.Error("Error fetching book details: ${e.message}"))

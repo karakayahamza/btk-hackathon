@@ -53,14 +53,15 @@
     <string name="quick_access_to_book_abstracts">Quick Access to Book Abstracts</string>
     <string name="ask_anything_you_ve_ever_wondered">Ask Anything You\'ve Ever Wondered</string>
     <string name="discover_new_books">Discover New Books</string>
-    <string name="with_this_app_you_can_access_book_summaries_ask_questions_about_books_and_get_personalized_recommendations">With this app, you can access book summaries, ask questions about books and get personalized recommendations.</string>
+    <string name="with_this_app_you_can_access_book_summaries_ask_questions_about_books_and_get_personalized_recommendations">With this app you can access book summaries, ask questions about books and solve quizzes related to the book.</string>
     <string name="easily_access_the_summaries_of_the_books_you_are_curious_about_and_read_them_without_wasting_time_get_quick_information_about_books">Easily access the summaries of the books you are curious about and read them without wasting time. Get quick information about books.</string>
     <string name="do_you_have_questions_about_books_ask_anything_you_want_about_books_authors_content_and_more_and_get_instant_answers_with_gemini_ai_support_in_the_app">Do you have questions about books? Ask anything you want about books, authors, content and more and get instant answers with Gemini AI support in the app.</string>
-    <string name="get_personalized_book_recommendations_based_on_your_interests_meet_new_books_and_expand_your_reading_list">Get personalized book recommendations based on your interests. Meet new books and expand your reading list.</string>
+    <string name="get_personalized_book_recommendations_based_on_your_interests_meet_new_books_and_expand_your_reading_list">Browse through hundreds of books you have read or want to read. Meet new books and expand your reading list.</string>
     <string name="next">Next</string>
     <string name="let_s_get_started">Let\'s get started</string>
     <string name="profile">Profile</string>
-    <string name="bookdetail_system_ins">You will be given the name of a book. Return the following details of this book in JSON format with the specified key names:
+    <string name="bookdetail_system_ins">
+You will be given the name of a book. Return the following details of this book in JSON format with the specified key names:
 - A long and detailed summary (“summary”)
 - Author of the book (“author”)
 - Short biography of the author (“author_biography”)
@@ -78,7 +79,8 @@ ATTENTION: The JSON response has to be the exactly like the below nothing more t
     "publication_date": "Publication date here",
     "main_characters": ["Main Character 1", "Main Character 2"],
     "summary": "Here is the summary of the book"
-}</string>
+}
+    </string>
 
     <string name="quiz_system_ins">"I want you to take the name of the book you have been given and write 10 questions about it.  All content must be in English.
  \n”

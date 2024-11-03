@@ -3,6 +3,7 @@ package com.example.btk_hackathon.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -43,21 +45,23 @@ fun CustomSwitch(
     circleBackgroundOffResource: Int,
     stateOn: Int,
     stateOff: Int,
-    initialValue: Int,
+    isChecked: Boolean,
     onCheckedChanged: (checked: Boolean) -> Unit
 ) {
     val swipeableState = rememberSwipeableState(
-        initialValue = initialValue,
+        initialValue = if (isChecked) stateOn else stateOff,
         confirmStateChange = { newState ->
-            onCheckedChanged(newState == stateOn)
+            val isNowChecked = newState == stateOn
+            if (isChecked != isNowChecked) {
+                onCheckedChanged(isNowChecked) // Call onCheckedChanged if the state changes
+            }
             true
         }
     )
 
+    // Define the anchors for swipeable state
     val sizePx = with(LocalDensity.current) { (width - height).toPx() }
     val anchors = mapOf(0f to stateOff, sizePx to stateOn)
-
-    val scope = rememberCoroutineScope()
 
     Row(
         modifier = Modifier
@@ -67,11 +71,11 @@ fun CustomSwitch(
             .border(1.dp, Color.DarkGray, CircleShape)
             .background(Color.Transparent)
             .then(
-                if (swipeableState.currentValue == stateOff) Modifier.paint(
-                    painterResource(id = outerBackgroundOffResource),
+                if (isChecked) Modifier.paint(
+                    painterResource(id = outerBackgroundOnResource),
                     contentScale = ContentScale.FillBounds
                 ) else Modifier.paint(
-                    painterResource(id = outerBackgroundOnResource),
+                    painterResource(id = outerBackgroundOffResource),
                     contentScale = ContentScale.FillBounds
                 )
             ),
@@ -90,14 +94,22 @@ fun CustomSwitch(
                 .padding(circleButtonPadding)
                 .clip(RoundedCornerShape(50))
                 .then(
-                    if (swipeableState.currentValue == stateOff) Modifier.paint(
-                        painterResource(id = circleBackgroundOffResource),
+                    if (isChecked) Modifier.paint(
+                        painterResource(id = circleBackgroundOnResource),
                         contentScale = ContentScale.FillBounds
                     ) else Modifier.paint(
-                        painterResource(id = circleBackgroundOnResource),
+                        painterResource(id = circleBackgroundOffResource),
                         contentScale = ContentScale.FillBounds
                     )
                 )
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            // Toggle the checked state when tapped
+                            onCheckedChanged(!isChecked) // Call onCheckedChanged with the new state
+                        }
+                    )
+                }
         )
     }
 }

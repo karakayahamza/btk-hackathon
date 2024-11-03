@@ -72,6 +72,8 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
             icon = Icons.Filled.Build,
             onClick = { /* onClick */ },
             trailing = {
+                val isEnglish by viewModel.isEnglish.collectAsState()
+
                 CustomSwitch(
                     height = 35.dp,
                     width = 70.dp,
@@ -82,17 +84,14 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
                     circleBackgroundOffResource = R.drawable.turkish_flag,
                     stateOn = 1,
                     stateOff = 0,
-                    initialValue = if (isEnglish) 1 else 0,
+                    isChecked = isEnglish,
                     onCheckedChanged = { checked ->
-                        if (checked) {
-                            viewModel.toggleLanguage(context)
-                        } else {
-                            viewModel.toggleLanguage(context)
-                        }
+                        viewModel.toggleLanguage(context)
                     }
                 )
             }
         )
+
 
 
 

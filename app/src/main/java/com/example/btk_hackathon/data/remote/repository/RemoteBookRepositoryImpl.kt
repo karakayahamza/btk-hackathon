@@ -31,7 +31,7 @@ class RemoteBookRepositoryImpl @Inject constructor(
 
         val chat = bookGenerativeModel.startChat(chatHistory)
         val response = chat.sendMessage(prompt)
-        Log.d("Gemini Response", prompt)
+        Log.d("Gemin22222", response.text.toString())
         return Gson().fromJson(response.text, GeminiBookModel::class.java)
     }
 
