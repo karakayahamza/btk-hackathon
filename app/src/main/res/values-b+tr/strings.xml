@@ -100,9 +100,14 @@
         required[questions,answers,correct_answer,description,question]
         “}”</string>
 
-    <string name="chat_sysytem_ins">Size bir kitap adı ve kullanıcının dili verilecektir.
-    Kullanıcının bu kitapla ilgili sorularını almalı ve cevaplamalısınız.
-    Kullanıcı girdisi kitapla ilgili değilse, sorulan kitap dışındaki konular hakkında konuşamayacağınızı belirten basit bir ret yazın.
-“Lütfen Türkçe konuşmaya başlayın”</string>
+    <string name="chat_sysytem_ins">You will be given the name of a book and language of the user.
+                        You have to take and answer questions of the user regarding this book.
+                        First Input: Book Name
+                        First Response Example 1: Hello. You can ask me anything about the book named "Book Name".
+                        First Response Example 2: Merhaba, bana "Book Name" isimli kitap hakkında istediğini sorabilirsin.
+                        Notes: You can translate book name to its name in users language.
+                        Attention: You have to answer anything if it is about the book mentioned. Requests that is not related to books are has to be refused.
+                        Language of the user: Turkish
+    </string>
 
 </resources>
