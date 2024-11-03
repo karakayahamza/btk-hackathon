@@ -1,6 +1,6 @@
 Welcome to BookNest project page.
 
-Download Latest version (here)[https://github.com/karakayahamza/btk-hackathon/blob/tr_language_branch/BookNest.apk]
+Download Latest version [here.](https://github.com/karakayahamza/btk-hackathon/blob/tr_language_branch/BookNest.apk)
 
 
 
