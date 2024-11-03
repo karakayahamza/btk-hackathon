@@ -99,11 +99,14 @@ fun BookList(
     onBookClick: (BookEntity) -> Unit
 ) {
     LazyColumn(Modifier.padding(8.dp)) {
-        items(books.size) { book ->
+        items(books.size) { index ->
             SwipeToDismissBookCard(
                 viewModel,
-                bookEntity = books[book],
-                onBookClick = onBookClick
+                bookEntity = books[index],
+                onBookClick = onBookClick,
+                onDelete = {
+                    viewModel.deleteBook(it)
+                }
             )
             Spacer(modifier = Modifier.padding(8.dp))
         }
@@ -114,24 +117,20 @@ fun BookList(
 fun SwipeToDismissBookCard(
     viewModel: MyLibraryViewModel,
     bookEntity: BookEntity,
-    onBookClick: (BookEntity) -> Unit
+    onBookClick: (BookEntity) -> Unit,
+    onDelete: (BookEntity) -> Unit
 ) {
     val context = LocalContext.current
     val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = {
-            when (it) {
-                SwipeToDismissBoxValue.StartToEnd -> {
-                    false
-                }
-
+        confirmValueChange = { dismissValue ->
+            when (dismissValue) {
+                SwipeToDismissBoxValue.StartToEnd -> false
                 SwipeToDismissBoxValue.EndToStart -> {
-                    viewModel.deleteBook(bookEntity)
-                    Toast.makeText(context,
-                        context.getString(R.string.book_deleted), Toast.LENGTH_SHORT).show()
+                    onDelete(bookEntity)
+                    Toast.makeText(context, context.getString(R.string.book_deleted), Toast.LENGTH_SHORT).show()
                     true
                 }
-
-                SwipeToDismissBoxValue.Settled -> return@rememberSwipeToDismissBoxState false
+                SwipeToDismissBoxValue.Settled -> false
             }
         }
     )
@@ -148,7 +147,6 @@ fun SwipeToDismissBookCard(
         }
     )
 }
-
 
 @Composable
 fun DismissBackground(dismissState: SwipeToDismissBoxState) {

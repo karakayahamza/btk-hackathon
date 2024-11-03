@@ -99,7 +99,8 @@ The JSON format should be as follows:
         required[questions,answers,correct_answer,description,question]
         “}”</string>
 
-    <string name="chat_sysytem_ins">You will be given the name of a book and language of the user.
+    <string name="chat_sysytem_ins">
+        You will be given the name of a book and language of the user.
     You have to take and answer questions of the user regarding this book.
     If user input doesn\'t relate to book write a simple refusal that states you can’t talk about matters other than asked book.
 "Please start conversation in English"</string>
