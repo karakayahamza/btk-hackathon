@@ -1,5 +1,6 @@
 package com.example.btk_hackathon.presentation.screens.profile_screen
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -24,7 +25,7 @@ class ProfileViewModel @Inject constructor(application: Application) : AndroidVi
         _isEnglish.value = newLanguageIsEnglish
         saveLanguagePreference(newLanguageIsEnglish)
         setLocale(context, if (newLanguageIsEnglish) "en" else "tr")
-        restartActivity(context)
+        restartApplication(context)
     }
 
     private fun saveLanguagePreference(isEnglish: Boolean) {
@@ -35,9 +36,13 @@ class ProfileViewModel @Inject constructor(application: Application) : AndroidVi
         return sharedPreferences.getString("language_code", "en") == "en"
     }
 
-    private fun restartActivity(context: Context) {
-        val intent = Intent(context, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+    private fun restartApplication(context: Context) {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        }
         context.startActivity(intent)
+        if (context is Activity) {
+            context.finish()
+        }
     }
 }

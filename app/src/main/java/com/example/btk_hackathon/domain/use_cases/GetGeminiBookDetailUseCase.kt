@@ -12,7 +12,6 @@ import javax.inject.Inject
 class GetGeminiBookDetailUseCase @Inject constructor(
     private val repository: RemoteBookRepository
 ) {
-
     suspend operator fun invoke(bookName: String): Flow<Resource<GeminiBookModel>> {
         return flow {
             emit(Resource.Loading())

@@ -2,6 +2,7 @@ package com.example.btk_hackathon.data.di.modules
 
 import android.content.Context
 import com.example.btk_hackathon.BuildConfig
+import com.example.btk_hackathon.R
 import com.example.btk_hackathon.data.di.qualifiers.BookDetailGenerativeModel
 import com.example.btk_hackathon.data.di.qualifiers.BookQuizGenerativeModel
 import com.example.btk_hackathon.data.di.qualifiers.ChatGenerativeModel
@@ -19,6 +20,7 @@ fun getUserLanguage(context: Context): String {
     val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     return sharedPreferences.getString("language_code", "en") ?: "en"
 }
+
 @Module
 @InstallIn(SingletonComponent::class)
 object GenerativeModelModule {
@@ -27,6 +29,7 @@ object GenerativeModelModule {
     @Provides
     @Singleton
     fun provideBookDetailGenerativeModel(@ApplicationContext context: Context): GenerativeModel {
+        val systemLang = context.resources.getString(R.string.bookdetail_system_ins)
         return GenerativeModel("gemini-1.5-flash",
             BuildConfig.API_KEY,
             generationConfig = generationConfig {
@@ -38,29 +41,7 @@ object GenerativeModelModule {
             },
             systemInstruction = content {
                 text(
-                    """
-                    You will be given the name of a book. Return me the following details of this book in JSON format with the specified key names:
-                    - Write everything in the."""+ getUserLanguage(context) +
-                     """
-                    - A long and detailed summary (“summary”)
-                    - Author of the book (“author”)
-                    - Short biography of the author (“author_biography”)
-                    - Publication date of the book (“publication_date”)
-                    - Type of book (“genre”)
-                    - Name of the book (“book_name”)
-                    - Main Characters (“main_characters”) <must be String List> 
-                    
-                    The JSON format should be as follows:
-                    {
-                        “book_name”: “Here is the name of the book”,
-                        “author”: “Author name here”,
-                        “author_biography”: “Author bio here”,
-                        “genre”: “Book type here”,
-                        “publication_date”: “Publication date here”,
-                        “main_characters”: “Main Characters here”,
-                        “summary”: “Here is the summary of the book”
-                    }
-                    """
+                    systemLang
                 )
             }
         )
@@ -70,6 +51,7 @@ object GenerativeModelModule {
     @Provides
     @Singleton
     fun provideBookQuizGenerativeModel(@ApplicationContext context: Context): GenerativeModel {
+        val systemLang = context.resources.getString(R.string.quiz_system_ins)
         return GenerativeModel(
             modelName = "gemini-1.5-flash",
             apiKey = BuildConfig.API_KEY,
@@ -82,22 +64,7 @@ object GenerativeModelModule {
             },
             systemInstruction = content {
                 text(
-                    "I want you to take the title of the book you have been given and write 10 questions about it. \n" +
-                            "The questions should have 4 options.\n" +
-                            "User's language code for this instance:" + getUserLanguage(context) +
-                            "You must also send me the correct answer.\n" +
-                            "Explain the correct answers but it must properly explain the correct answer.\n" +
-                            "Do not ask the same questions as before. " +
-                            "{\n" +
-                            "  \"questions\": [\n" +
-                            "    {\n" +
-                            "      \"answers\": [\"String\", \"String\", \"String\", \"String\"],\n" +
-                            "      \"correct_answer\": \"String\",\n" +
-                            "      \"explanation\": \"String\",\n" +
-                            "      \"question\": \"String\"\n" +
-                            "    }\n" +
-                            "  ]\n" +
-                            "}"
+                    systemLang
                 )
             }
         )
@@ -107,6 +74,7 @@ object GenerativeModelModule {
     @Provides
     @Singleton
     fun provideChatGenerativeModel(@ApplicationContext context: Context): GenerativeModel {
+        val systemLang = context.resources.getString(R.string.chat_sysytem_ins)
         return GenerativeModel(
             modelName = "gemini-1.5-flash",
             apiKey = BuildConfig.API_KEY,
@@ -117,15 +85,10 @@ object GenerativeModelModule {
                 maxOutputTokens = 8192
                 responseMimeType = "text/plain"
             },
+
             systemInstruction = content {
                 text(
-                    """
-                        You will be given the name of a book and language of the user.
-                        You have to take and answer questions of the user regarding this book.
-                        If user input doesn't relate to book write a simple refusal that states you can’t talk about matters other than asked book.
-                    """.trimIndent()+
-                    "User's language code for this instance:" + getUserLanguage(context) +
-                    "Please start conversation in this language."
+                    systemLang
                 )
             }
         )

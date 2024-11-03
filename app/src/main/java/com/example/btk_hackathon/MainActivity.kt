@@ -38,7 +38,13 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    override fun onRestart(){
+        super.onRestart()
+        val languageCode = loadLanguagePreference(this)
+        setLocale(this, languageCode)
+    }
 }
+
 
 @Composable
 fun MainScreen() {

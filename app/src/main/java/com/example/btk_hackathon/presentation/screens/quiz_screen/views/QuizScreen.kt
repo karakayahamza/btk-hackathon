@@ -156,14 +156,20 @@ fun QuizQuestionItem(question: Question, viewModel: QuizViewModel) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable {
-                        viewModel.setSelectedAnswer(question.question, answer)  // Save selection
-                    }
+//                    .clickable {
+//                        viewModel.setSelectedAnswer(question.question, answer)  // Save selection
+//                    }
                     .padding(vertical = 4.dp)
             ) {
                 RadioButton(
                     selected = selectedAnswer == answer,
-                    onClick = { viewModel.setSelectedAnswer(question.question, answer) }
+                    onClick = {
+                        if (question.question != null && answer != null) {
+                            viewModel.setSelectedAnswer(question.question, answer)
+                        } else {
+                            Log.e("RadioButton", "Question or answer is null!")
+                        }
+                    }
                 )
                 Text(text = answer, modifier = Modifier.padding(start = 8.dp))
             }
@@ -189,7 +195,7 @@ fun QuizQuestionItem(question: Question, viewModel: QuizViewModel) {
                 )
             }
             Text(
-                text = question.explanation,
+                text = question.description,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp)

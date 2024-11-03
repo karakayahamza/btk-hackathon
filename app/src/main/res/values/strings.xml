@@ -7,7 +7,7 @@
     <string name="books_are_waiting_for_you">Books are Waiting for You!</string>
     <string name="no_books_were_found">No books were found.</string>
     <string name="authors">Authors: %1$s</string>
-    <string name="main_characters">Main Characters: %1$s</string>
+    <string name="main_characters">Main Characters</string>
     <string name="book_image">Book Image</string>
     <string name="save_to_my_library">Save to My Library</string>
     <string name="book_cover">Book Cover</string>
@@ -60,4 +60,47 @@
     <string name="next">Next</string>
     <string name="let_s_get_started">Let\'s get started</string>
     <string name="profile">Profile</string>
+    <string name="bookdetail_system_ins">You will be given the name of a book. Return the following details of this book in JSON format with the specified key names:
+- A long and detailed summary (“summary”)
+- Author of the book (“author”)
+- Short biography of the author (“author_biography”)
+- Publication date of the book (“publication_date”)
+- Type of book (“genre”)
+- "Please extract only the main book title from each entry and exclude any additional details or series information. For example, if the input is 'The Hunger Games Trilogy (Hunger Games / Catching Fire),' return only 'The Hunger Games.'"
+- Main Characters (“main_characters”) must be a String List
+
+The JSON format should be as follows:
+{
+    "book_name": "Here is the name of the book",
+    "author": "Author name here",
+    "author_biography": "Author bio here",
+    "genre": "Book type here",
+    "publication_date": "Publication date here",
+    "main_characters": ["Main Character 1", "Main Character 2"],
+    "summary": "Here is the summary of the book"
+}</string>
+
+    <string name="quiz_system_ins">"I want you to take the name of the book you have been given and write 10 questions about it.  All content must be in English.
+ \n”
+        “Questions must have 4 options.\n”
+        “You must also send me the correct answer.\n”
+        “Explain the correct answers, but must explain the correct answer properly.\n”
+        "Don\'t ask the same questions as before. ”
+        “{\n”
+        “ \”questions\": [\n”
+        “ {\n”
+        “ \”answers\": [\“String\”, \“String\”, \“String\”, \“String\”, \“String\”],\n”
+        “ \”correct_answer\“:\”String\“,\n”
+        “ \”description\": \“String\”,\n”
+        “ \”question\“:\”String\“\n”
+        “ }\n”
+        “ ]\n”
+
+        required[questions,answers,correct_answer,description,question]
+        “}”</string>
+
+    <string name="chat_sysytem_ins">You will be given the name of a book and language of the user.
+    You have to take and answer questions of the user regarding this book.
+    If user input doesn\'t relate to book write a simple refusal that states you can’t talk about matters other than asked book.
+"Please start conversation in English"</string>
 </resources>
