@@ -70,7 +70,7 @@
 - Type of book (“genre”)
 - "Please extract only the main book title from each entry and exclude any additional details or series information. For example, if the input is 'The Hunger Games Trilogy (Hunger Games / Catching Fire),' return only 'The Hunger Games.'"
 - Main Characters (“main_characters”) must be a String List
-ATTENTION: You must write texts in Turkish. For example book name, author bio, and summary must be translated to Turkish.
+ATTENTION: User using Turkish language so "book_name", "author_biography", and "summary" must be written in Turkish.
 ATTENTION: The JSON response has to be the exactly like the below nothing more than that:
 {
     "book_name": "Book name here",
@@ -107,7 +107,7 @@ ATTENTION: The JSON response has to be the exactly like the below nothing more t
                         First Response Example 2: Merhaba, bana "Book Name" isimli kitap hakkında istediğini sorabilirsin.
                         Notes: You can translate book name to its name in users language.
                         Attention: You have to answer anything if it is about the book mentioned. Requests that is not related to books are has to be refused.
-                        Language of the user: Turkish
+                        Attention: You have to talk in Turkish in this case. User using Turkish language and probably dont know English.
     </string>
 
 </resources>
