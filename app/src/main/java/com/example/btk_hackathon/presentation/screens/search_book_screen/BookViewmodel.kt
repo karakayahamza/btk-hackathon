@@ -40,10 +40,7 @@ class SearchBookViewModel @Inject constructor(
 
     fun fetchAndInsertBook(bookName: String, coverEditionKey: String) {
         _saveState.value = SaveState.Loading
-
         viewModelScope.launch {
-
-            Log.d("BookViewModel",bookName.toString())
             getGeminiBookDetailUseCase(bookName).collect { resource ->
                 when (resource) {
                     is Resource.Success -> resource.data?.let { bookDetail ->

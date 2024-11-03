@@ -12,10 +12,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.btk_hackathon.presentation.navigation.Screen
+import com.example.btk_hackathon.Util.LocaleUtils
 import com.example.btk_hackathon.presentation.components.BottomBar
 import com.example.btk_hackathon.presentation.navigation.MainScreenNavHost
 import com.example.btk_hackathon.presentation.navigation.NavigationGraph
+import com.example.btk_hackathon.presentation.navigation.Screen
 import com.example.btk_hackathon.ui.theme.BtkhackathonTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +25,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val languageCode = loadLanguagePreference(this)
-        setLocale(this, languageCode)
+        LocaleUtils.setLocale(this, languageCode)
+        Log.d("LIFECYCLE", "Main created")
+
         setContent {
             BtkhackathonTheme {
                 val navController = rememberNavController()
@@ -38,10 +41,11 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    override fun onRestart(){
+
+    override fun onRestart() {
         super.onRestart()
         val languageCode = loadLanguagePreference(this)
-        setLocale(this, languageCode)
+        LocaleUtils.setLocale(this, languageCode)
     }
 }
 

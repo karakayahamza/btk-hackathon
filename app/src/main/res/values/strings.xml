@@ -111,4 +111,5 @@ ATTENTION: The JSON response has to be the exactly like the below nothing more t
                         Attention: You have to answer anything if it is about the book mentioned. Requests that is not related to books are has to be refused.
                         Language of the user: English
     </string>
+    <string name="book_saved_successfully">Book saved successfully!</string>
 </resources>

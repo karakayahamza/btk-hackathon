@@ -11,15 +11,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MyLibraryViewModel @Inject constructor(private val bookRepository: LocalBookRepository) :
-    ViewModel() {
+class MyLibraryViewModel @Inject constructor(private val bookRepository: LocalBookRepository) : ViewModel() {
 
     private val _myLibraryUiState = MutableStateFlow<MyLibraryUiState>(MyLibraryUiState.Loading)
     val myLibraryUiState: StateFlow<MyLibraryUiState> = _myLibraryUiState.asStateFlow()
+
+    // This holds the list of books
+    private val _booksState = MutableStateFlow<List<BookEntity>>(emptyList())
+    val booksState: StateFlow<List<BookEntity>> = _booksState.asStateFlow()
 
     init {
         fetchBooks()
@@ -30,25 +34,28 @@ class MyLibraryViewModel @Inject constructor(private val bookRepository: LocalBo
             bookRepository.getBooks()
                 .onStart { _myLibraryUiState.value = MyLibraryUiState.Loading }
                 .catch { e ->
-                    _myLibraryUiState.value =
-                        MyLibraryUiState.Error(e.message ?: "Unknown error")
+                    _myLibraryUiState.value = MyLibraryUiState.Error(e.message ?: "Unknown error")
                 }
                 .collect { data ->
-                    _myLibraryUiState.value =
-                        MyLibraryUiState.Success(data)
+                    _myLibraryUiState.value = MyLibraryUiState.Success(data)
+                    _booksState.value = data // Update the books state
                 }
         }
     }
 
     fun deleteBook(book: BookEntity) {
         viewModelScope.launch {
+            Log.d("Viewmodel MyLibrary", "Deleting: ${book.title}") // Assuming BookEntity has a title property
             bookRepository.delete(book)
-            fetchBooks()
+
+            _booksState.update { currentList ->
+                currentList.filter { it.id != book.id } // Assuming BookEntity has an id property
+            }
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        Log.d("ViewModel", "BookDetailViewModel")
+        Log.d("ViewModel", "MyLibraryViewModel cleared")
     }
 }

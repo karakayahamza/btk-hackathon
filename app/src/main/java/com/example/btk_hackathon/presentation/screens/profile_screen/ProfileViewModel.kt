@@ -7,24 +7,31 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.example.btk_hackathon.MainActivity
-import com.example.btk_hackathon.setLocale
+import com.example.btk_hackathon.Util.LocaleUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
-    private val sharedPreferences = application.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+class ProfileViewModel @Inject constructor(application: Application) :
+    AndroidViewModel(application) {
+    private val sharedPreferences =
+        application.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     private val _isEnglish = MutableStateFlow(isEnglishLanguage())
     val isEnglish: StateFlow<Boolean> = _isEnglish
 
     fun toggleLanguage(context: Context) {
         val newLanguageIsEnglish = !_isEnglish.value
-        Log.d("ProfileViewModel", "Changing language to: ${if (newLanguageIsEnglish) "en" else "tr"}")
+        Log.d(
+            "ProfileViewModel",
+            "Changing language to: ${if (newLanguageIsEnglish) "en" else "tr"}"
+        )
         _isEnglish.value = newLanguageIsEnglish
         saveLanguagePreference(newLanguageIsEnglish)
-        setLocale(context, if (newLanguageIsEnglish) "en" else "tr")
+
+        LocaleUtils.setLocale(context, if (newLanguageIsEnglish) "en" else "tr")
+
         restartApplication(context)
     }
 

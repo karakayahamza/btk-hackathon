@@ -49,9 +49,9 @@ import com.example.btk_hackathon.presentation.components.CustomSwitch
 @Composable
 fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
     val context = LocalContext.current
-    val isEnglish by viewModel.isEnglish.collectAsState()
     var showContactSupportDialog by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
+    val isEnglish by viewModel.isEnglish.collectAsState()
 
     Column(
         modifier = Modifier
@@ -72,7 +72,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
             icon = Icons.Filled.Build,
             onClick = { /* onClick */ },
             trailing = {
-                val isEnglish by viewModel.isEnglish.collectAsState()
+
 
                 CustomSwitch(
                     height = 35.dp,

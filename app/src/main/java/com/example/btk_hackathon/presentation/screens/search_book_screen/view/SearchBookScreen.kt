@@ -109,7 +109,7 @@ fun DisplayToastMessage(context: Context, saveState: SaveState, viewModel: Searc
     LaunchedEffect(saveState) {
         val message = when (saveState) {
             is SaveState.Loading -> context.getString(R.string.the_book_is_being_added_to_the_library)
-            is SaveState.Success -> saveState.message
+            is SaveState.Success -> context.getString(R.string.book_saved_successfully)
             is SaveState.Error -> saveState.message
             SaveState.Idle -> null
         }

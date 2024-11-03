@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -32,16 +34,19 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -59,117 +64,34 @@ import com.example.btk_hackathon.presentation.screens.my_library_screen.MyLibrar
 fun MyLibraryScreen(mainNavController: NavHostController) {
     val viewModel: MyLibraryViewModel = hiltViewModel()
     val bookUiState by viewModel.myLibraryUiState.collectAsState()
+
     Scaffold { paddingValues ->
         Surface(modifier = Modifier.background(MaterialTheme.colorScheme.onSurface)) {
-            Column(
-                modifier = Modifier.padding(paddingValues)
-            ) {
-                LibraryHeader()
-                when (bookUiState) {
-                    is MyLibraryUiState.Loading -> LoadingIndicator()
-                    is MyLibraryUiState.Success -> {
-                        val books = (bookUiState as MyLibraryUiState.Success).bookEntities
-                        if (books.isNotEmpty()) {
-                            BookList(viewModel, books) { book ->
-                                mainNavController.navigate(Screen.BookDetailScreen.createRoute(book.id.toString())) {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        } else {
-                            NoBooksMessage()
-                        }
-                    }
 
-                    is MyLibraryUiState.Error -> {
-                        val errorMessage = (bookUiState as MyLibraryUiState.Error).message
-                        ErrorMessage(errorMessage)
+            LibraryHeader()
+            when (bookUiState) {
+                is MyLibraryUiState.Loading -> LoadingIndicator()
+                is MyLibraryUiState.Success -> {
+                    val books = (bookUiState as MyLibraryUiState.Success).bookEntities
+                    if (books.isNotEmpty()) {
+//                        BooksList(books = books, viewModel = viewModel) { book ->
+//                            mainNavController.navigate(Screen.BookDetailScreen.createRoute(book.id.toString())) {
+//                                launchSingleTop = true
+//                                restoreState = true
+//                            }
+//                        }
+                        Books(viewModel, mainNavController)
+                    } else {
+                        NoBooksMessage()
                     }
                 }
-            }
-        }
-    }
 
-}
-
-@Composable
-fun BookList(
-    viewModel: MyLibraryViewModel,
-    books: List<BookEntity>,
-    onBookClick: (BookEntity) -> Unit
-) {
-    LazyColumn(Modifier.padding(8.dp)) {
-        items(books.size) { index ->
-            SwipeToDismissBookCard(
-                viewModel,
-                bookEntity = books[index],
-                onBookClick = onBookClick,
-                onDelete = {
-                    viewModel.deleteBook(it)
+                is MyLibraryUiState.Error -> {
+                    val errorMessage = (bookUiState as MyLibraryUiState.Error).message
+                    ErrorMessage(errorMessage)
                 }
-            )
-            Spacer(modifier = Modifier.padding(8.dp))
-        }
-    }
-}
-
-@Composable
-fun SwipeToDismissBookCard(
-    viewModel: MyLibraryViewModel,
-    bookEntity: BookEntity,
-    onBookClick: (BookEntity) -> Unit,
-    onDelete: (BookEntity) -> Unit
-) {
-    val context = LocalContext.current
-    val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { dismissValue ->
-            when (dismissValue) {
-                SwipeToDismissBoxValue.StartToEnd -> false
-                SwipeToDismissBoxValue.EndToStart -> {
-                    onDelete(bookEntity)
-                    Toast.makeText(context, context.getString(R.string.book_deleted), Toast.LENGTH_SHORT).show()
-                    true
-                }
-                SwipeToDismissBoxValue.Settled -> false
             }
-        }
-    )
 
-    SwipeToDismissBox(
-        state = dismissState,
-        enableDismissFromStartToEnd = false,
-        enableDismissFromEndToStart = true,
-        backgroundContent = {
-            DismissBackground(dismissState)
-        },
-        content = {
-            BookCard(bookEntity = bookEntity, onClick = { onBookClick(bookEntity) })
-        }
-    )
-}
-
-@Composable
-fun DismissBackground(dismissState: SwipeToDismissBoxState) {
-    val color = when (dismissState.dismissDirection) {
-        SwipeToDismissBoxValue.EndToStart -> Color(0xFFFF1744)
-        else -> Color.Transparent
-    }
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .clip(RoundedCornerShape(16.dp))
-            .padding(start = 8.dp)
-            .background(color),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End
-    ) {
-        if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
-            Icon(
-                Icons.Default.Delete,
-                contentDescription = stringResource(R.string.delete),
-                tint = Color.White,
-                modifier = Modifier.padding(end = 16.dp)
-            )
         }
     }
 }
@@ -267,9 +189,103 @@ fun BookInfo(bookEntity: BookEntity) {
             fontWeight = FontWeight.Bold
         )
         Text(
-            text =  bookEntity.author,
+            text = bookEntity.author,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.secondary
+        )
+    }
+}
+
+@Composable
+fun Books(viewModel: MyLibraryViewModel, mainNavController: NavController) {
+    val bookuistate by viewModel.myLibraryUiState.collectAsState()
+    val books = (bookuistate as MyLibraryUiState.Success).bookEntities
+    LazyColumn(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxSize(),
+        contentPadding = PaddingValues(vertical = 12.dp),
+    ) {
+        itemsIndexed(
+            items = books,
+            key = { _, item -> item.hashCode() }
+        ) { _, bookContent ->
+            BookItem(
+                bookContent,
+                mainNavController = mainNavController,
+                onRemove = viewModel::deleteBook
+            )
+        }
+    }
+}
+
+@Composable
+fun BookItem(
+    bookEntity: BookEntity,
+    modifier: Modifier = Modifier,
+    mainNavController: NavController,
+    onRemove: (BookEntity) -> Unit
+
+) {
+    val context = LocalContext.current
+    val currentItem by rememberUpdatedState(bookEntity)
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = {
+            when (it) {
+                SwipeToDismissBoxValue.StartToEnd -> {
+
+                }
+
+                SwipeToDismissBoxValue.EndToStart -> {
+                    onRemove(currentItem)
+                    Toast.makeText(context, "Item deleted", Toast.LENGTH_SHORT).show()
+                }
+
+                SwipeToDismissBoxValue.Settled -> return@rememberSwipeToDismissBoxState false
+            }
+            return@rememberSwipeToDismissBoxState true
+        },
+        positionalThreshold = { it * .25f }
+    )
+    SwipeToDismissBox(
+        enableDismissFromStartToEnd = false,
+        state = dismissState,
+        modifier = modifier,
+        backgroundContent = { DismissBackground(dismissState) },
+        content = {
+            BookCard(bookEntity = bookEntity) {
+                mainNavController.navigate(Screen.BookDetailScreen.createRoute(bookEntity.id.toString())) {
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        })
+}
+
+@Composable
+fun DismissBackground(dismissState: SwipeToDismissBoxState) {
+    val color = when (dismissState.dismissDirection) {
+        SwipeToDismissBoxValue.StartToEnd -> Color(0xFFFF1744)
+        SwipeToDismissBoxValue.EndToStart -> Color(0xFFFF1744)
+        SwipeToDismissBoxValue.Settled -> Color.Transparent
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color)
+            .padding(12.dp, 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Icon(
+            Icons.Default.Delete,
+            contentDescription = "delete"
+        )
+        Spacer(modifier = Modifier)
+        Icon(
+            painter = painterResource(R.drawable.england),
+            contentDescription = "Archive"
         )
     }
 }

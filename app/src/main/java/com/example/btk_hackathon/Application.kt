@@ -2,28 +2,20 @@ package com.example.btk_hackathon
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
+import com.example.btk_hackathon.Util.LocaleUtils
 import dagger.hilt.android.HiltAndroidApp
-import java.util.Locale
 
 @HiltAndroidApp
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        Log.d("LIFECYCLE", "Application created")
         val languageCode = loadLanguagePreference(this)
-        setLocale(this, languageCode)
+        Log.d("LIFECYCLE", "Loaded language code: $languageCode")
+        LocaleUtils.setLocale(this, languageCode)
     }
 }
-
-fun setLocale(context: Context, languageCode: String) {
-    val locale = Locale(languageCode)
-    Locale.setDefault(locale)
-
-    val config = context.resources.configuration
-    config.setLocale(locale)
-
-    context.resources.updateConfiguration(config, context.resources.displayMetrics)
-}
-
 
 fun loadLanguagePreference(context: Context): String {
     val sharedPref = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
