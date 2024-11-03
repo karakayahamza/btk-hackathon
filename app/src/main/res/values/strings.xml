@@ -69,9 +69,9 @@
 - "Please extract only the main book title from each entry and exclude any additional details or series information. For example, if the input is 'The Hunger Games Trilogy (Hunger Games / Catching Fire),' return only 'The Hunger Games.'"
 - Main Characters (“main_characters”) must be a String List
 
-The JSON format should be as follows:
+ATTENTION: The JSON response has to be the exactly like the below nothing more than that:
 {
-    "book_name": "Here is the name of the book",
+    "book_name": "Book name here",
     "author": "Author name here",
     "author_biography": "Author bio here",
     "genre": "Book type here",

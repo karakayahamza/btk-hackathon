@@ -62,26 +62,26 @@
     <string name="let_s_get_started">Haydi başlayalım</string>
     <string name="profile">Profil</string>
     <string name="bookdetail_system_ins">
-    Sana bir kitap adı verilecektir. Bana bu kitabın aşağıdaki ayrıntılarını belirtilen anahtar adlarıyla JSON biçiminde döndür:
-    - Uzun ve ayrıntılı bir özet ("summary")
-    - Kitabın yazarı ("author")
-    - Yazarın kısa biyografisi ("author_biography")
-    - Kitabın yayın tarihi ("publication_date")
-    - Kitap türü ("genre")
-    - "Lütfen her girdiden yalnızca ana kitap başlığını çıkarın ve ek ayrıntıları veya seri bilgilerini hariç tutun. Örneğin, girdi 'Açlık Oyunları Üçlemesi (Açlık Oyunları / Ateşi Yakalamak)' ise, yalnızca 'Açlık Oyunları' döndürülür."
-    - Ana Karakterler ("main_characters") dize listesi olmalı
+    You will be given the name of a book. Return the following details of this book in JSON format with the specified key names:
+- A long and detailed summary (“summary”)
+- Author of the book (“author”)
+- Short biography of the author (“author_biography”)
+- Publication date of the book (“publication_date”)
+- Type of book (“genre”)
+- "Please extract only the main book title from each entry and exclude any additional details or series information. For example, if the input is 'The Hunger Games Trilogy (Hunger Games / Catching Fire),' return only 'The Hunger Games.'"
+- Main Characters (“main_characters”) must be a String List
+ATTENTION: You must write texts in Turkish. For example book name, author bio, and summary must be translated to Turkish.
+ATTENTION: The JSON response has to be the exactly like the below nothing more than that:
+{
+    "book_name": "Book name here",
+    "author": "Author name here",
+    "author_biography": "Author bio here",
+    "genre": "Book type here",
+    "publication_date": "Publication date here",
+    "main_characters": ["Main Character 1", "Main Character 2"],
+    "summary": "Here is the summary of the book"
+}
 
-    JSON formatı aşağıdaki gibi olmalıdır:
-    {
-        "book_name": "İşte kitabın adı",
-        "author": "Yazar adı burada",
-        "author_biography": "Yazar biyografisi burada",
-        "genre": "Kitap türü burada",
-        "publication_date": "Yayın tarihi burada",
-        "main_characters": ["Ana Karakter 1", "Ana Karakter 2"],
-        "summary": "İşte kitabın özeti"
-    }
-        Türkçe olarak ver tüm verileri lütfen.
 </string>
     <string name="quiz_system_ins">"Size verilen kitabın adını almanızı ve onunla ilgili 10 soru yazmanızı istiyorum.Tüm içerik Türkçe olmalı. \n”
         “Sorular 4 seçenekli olmalıdır.\n”
